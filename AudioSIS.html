@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible"
+		content="IE=edge">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0">
+	<title>
+		SIS Audio Survey
+	</title>
+	<script>
+        testAudio = []
+		audioList = []
+        SubID = []
+        demographics = []
+        // audio is true, for recording
+            const audioIN = { audio: true}
+            // Access the permission for use
+            // the microphone
+            navigator.mediaDevices.getUserMedia(audioIN)
+
+            // 'then()' method returns a Promise
+            .then(function (mediaStreamObj) {
+
+                // Connect the media stream to the
+                // first audio element
+                let audio = document.querySelector('audio');
+                //returns the recorded audio via 'audio' tag
+
+                // 'srcObject' is a property which 
+                // takes the media object
+                // This is supported in the newer browsers
+                if ("srcObject" in audio) {
+                audio.srcObject = mediaStreamObj;
+                }
+                else { // Old version
+                audio.src = window.URL
+                    .createObjectURL(mediaStreamObj);
+                }
+
+                // It will play the audio
+                // audio.onloadedmetadata = function (ev) {
+
+                // // Play the audio in the 2nd audio
+                // // element what is being recorded
+                // audio.play();
+                // };
+
+                // Start record
+                let start = document.getElementById(`btnStart-test`);
+
+                // Stop record
+                let stop = document.getElementById(`btnStop-test`);
+
+                // 2nd audio tag for play the audio
+                let playAudio = document.getElementById(`audioPlay-test`);
+
+                // This is the main thing to recorded 
+                // the audio 'MediaRecorder' API
+                let mediaRecorder = new MediaRecorder(mediaStreamObj);
+                // Pass the audio stream 
+
+                // Start event
+                start.addEventListener('click', function (ev) {
+                mediaRecorder.start();
+                // console.log(mediaRecorder.state);
+                })
+
+                // Stop event
+                stop.addEventListener('click', function (ev) {
+                mediaRecorder.stop();
+                // console.log(mediaRecorder.state);
+                });
+
+                // If audio data available then push 
+                // it to the chunk array
+                mediaRecorder.ondataavailable = function (ev) {
+                dataArray.push(ev.data);
+                }
+
+                // Chunk array to store the audio data 
+                let dataArray = [];
+
+                // Convert the audio data in to blob 
+                // after stopping the recording
+                mediaRecorder.onstop = function (ev) {
+
+                    // blob of type mp3
+                    let audioData = new Blob(dataArray, 
+                                { 'type': 'audio/mp3;' });
+                    
+                    // After fill up the chunk 
+                    // array make it empty
+                    dataArray = [];
+
+                    // Creating audio url with reference 
+                    // of created blob named 'audioData'
+                    let audioSrc = window.URL
+                        .createObjectURL(audioData);
+
+                    // Pushing the audio file to an array outside function
+                    testAudio.push(audioData)
+                    
+
+                    // Pass the audio url to the 2nd video tag
+                    playAudio.src = audioSrc;
+                }
+            })
+            // If any error occurs then handles the error 
+            .catch(function (err) {
+                console.log(err.name, err.message);
+            });
+
+            function dataLoader() {
+            var AudioString = JSON.stringify(base64Audio);
+            localStorage.setItem("AudioFiles", AudioString)
+            document.getElementsByClassName('end')[0].style.display = "none"
+            document.getElementById("notyetdone").style.display = "block"
+        }
+	</script>
+	<style>
+		/* Styling the Body element 
+		i.e. Color, Font, Alignment */
+		body {
+			background-color: #002244;
+			font-family: Verdana;
+			text-align: center;
+		}
+
+		/* Styling the Form (Color, Padding, Shadow) */
+		form {
+			background-color: #fff;
+			max-width: 1000px;
+			margin: 50px auto;
+			padding: 30px 20px;
+			box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+		}
+
+		/* Styling form-control Class */
+		.form-control {
+			text-align: left;
+			margin-bottom: 25px;
+		}
+
+		/* Styling form-control Label */
+		.form-control label {
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		/* Styling form-control input, 
+		select, textarea */
+		.form-control input,
+		.form-control select,
+		.form-control textarea {
+			border: 1px solid #777;
+			border-radius: 2px;
+			font-family: inherit;
+			padding: 10px;
+			display: block;
+			width: 95%;
+		}
+
+		/* Styling form-control Radio 
+		button and Checkbox */
+		.form-control input[type="radio"],
+		.form-control input[type="checkbox"] {
+			display: inline-block;
+			width: auto;
+		}
+
+        .tab{
+            display:none
+        }
+
+		/* Styling Button */
+		#nextBtn {
+			background-color: #05c46b;
+			border: 1px solid #777;
+			border-radius: 2px;
+			font-family: inherit;
+			font-size: 21px;
+			display: block;
+			width: 30%;
+			margin-top: 50px;
+			margin-bottom: 20px;
+            margin-left: 20px;
+            float: right
+		}
+
+        #checkBtn {
+			background-color: #4258c7;
+			border: 1px solid #777;
+			border-radius: 2px;
+			font-family: inherit;
+			font-size: 21px;
+			display: block;
+			width: 30%;
+			margin-top: 50px;
+			margin-bottom: 20px;
+            margin-left: 20px;
+            float: left
+		}
+
+       .Next {
+            display: block
+        }
+
+        .ThankYou {
+            display: none
+        }
+
+		.PositiveChoice {
+			display: none
+		}
+
+		.NegativeChoice {
+			display: none
+		}
+
+        .Start {
+            display: block
+        }
+
+        .Stop {
+            display: block
+        }
+	</style>
+</head>
+
+<body>
+	<form id="form">
+        <div class = "tab"><h1>SIS Audio</h1>
+            <div class="form-control">
+                <label for="subID" id="label-subID" >
+                    Subject ID
+                </label>
+                <input type="text" id="IDvalue"
+                    placeholder="Experimenter: enter the Subject ID" />
+                </input>
+            </div>
+            <div class="form-control">
+                <label for="Prolific" id="label-Prolific" >
+                    Prolific ID
+                </label>
+                <input type="text" id="ProlificIDvalue"
+                    placeholder="Experimenter: enter your Prolific ID" />
+                </input>
+            </div>
+            <div class = "form-control">
+                <label for="Age" id="label-Age" value = Age>
+                    Age
+                </label>
+                <input type="text" id="Agevalue"
+                    placeholder="Enter your age" />
+                </input>
+            </div>
+            <div class="form-control">
+                <label for="gender" id="label-gender">
+                    Gender
+                </label>
+                <!-- Dropdown options -->
+                <select name="gender" id="gender">
+                    <option value="Gender" disabled selected>Enter your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Genderfluid">Genderfluid</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-control">
+                <label for="role" id="label-role">
+                    Education Level?
+                </label>
+                <!-- Dropdown options -->
+                <select name="role" id="role">
+                    <option value="Role" disabled selected>Enter your highest completed education</option>
+                    <option value="No Highschool Degree">No Highschool Degree</option>
+                    <option value="Associates Degree">Associates Degree</option>
+                    <option value="Some college">Some college</option>
+                    <option value="College Degree">College Degree</option>
+                    <option value="Graduate Degree">Graduate Degree</option>
+                </select>
+            </div>
+        </div>
+
+        <div class = "tab">
+            <div class = "audioTest">
+                <header>
+                    <h1>SIS Audio Check</h1><p>This is a test to see if your audio is properly working. After stopping the recording, press the check button to ensure your data will be properly saved. </p> </n> <p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
+                </header>
+                
+                <h3>What did you eat for breakfast this morning?</h3>
+                <!--button for 'start recording'-->
+                <p>
+                    <button type="button" name="startTest" id="btnStart-test" onclick="RecordingButtonStartTest()">START RECORDING</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" name="stopTest" id="btnStop-test" onclick="RecordingButtonStopTest()">STOP RECORDING</button>
+                    <!--button for 'stop recording'-->
+                </p>
+
+                <!--for record (Can change but this one has no play button so it just auto records)-->
+                <audio autoplay controls muted = 'true' style="display:none;"></audio>
+                <!--'controls' use for add 
+                    play, pause, and volume-->
+
+                <!--for play the audio-->
+                <audio id="audioPlay-test" controls></audio>
+            </div>
+        </div>
+
+		<!-- Question 1 start -->
+        <div class = "Questions" id="AQ">
+        </div>
+		<!-- Question 1 end -->
+
+        <p id="recordingStatus" style="color:red;display:none">Recording...</p>
+
+		<div class = "tab">
+            <h1> Thank you for your participation!</h1>
+            <h3>Click the button below to continue the survey </h3>
+            <div id='notyetdone' style="display:none"><a href='exp.html'>Submit</a></div>
+            <div class = "end">
+                <button type="button" id="loadData" value="load" onclick="dataLoader()">Save Data</button>
+            </div>
+        </div>
+
+        <div class = "Next" style = "overflow:auto;" style = "float:right;">
+            <button type="button" id="nextBtn" value="next" onclick="nextPrev()">
+                Next
+            </button>
+            <button type="button" id="checkBtn" value="check" style="display:none" onclick="CheckAudio()">
+                Check
+            </button>
+        </div>
+		<!-- This is the HTML for the button ; the nextPrev() is the function called in the script -->
+        
+        
+
+    </div>
+	</form>
+
+    <script>
+        const SurveyQuestions = [
+            //Non-Alcohol Questions
+            "What is a significant memory from your childhood that you still vividly remember?",
+            "Can you recall a time when you faced a significant challenge and how you overcame it?",
+            "What is a recent memory that stands out to you, and why does it feel significant?",
+            //Alcohol Questions
+            "Can you tell me about the first time you tried alcohol? How old were you, how did it make you feel?",
+            "Are there any experiences you had when drinking that really stand out? Can you tell me about one or two of them, in detail?",
+            "You’ve described some experiences. Are they good examples of how you feel about drinking right now, or at this point in your life?",
+            "Can you describe how your thinking about drinking has changed over the years?"
+        ]
+        SurveyQuestions.forEach(function(question, index) {
+            
+            var value = 4*index
+            var questionHTML = 
+                `<div class = "tab">
+                    <div class = "introQ">
+                        <header>
+                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
+                        </header>
+                        
+                        <h3>${question}</h3>
+                        <!--button for 'start recording'-->
+                        <p>
+                            <button type="button" name="start" id="btnStart-${value}" onclick="RecordingButtonStart(${value})">START RECORDING</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type="button" name="stop" id="btnStop-${value}" onclick="RecordingButtonStop1(${value},${index})">STOP RECORDING</button>
+                            <!--button for 'stop recording'-->
+                        </p>
+
+                        <!--for record (Can change but this one has no play button so it just auto records)-->
+                        <audio autoplay controls muted = 'true' style="display:none;"></audio>
+                        <!--'controls' use for add 
+                            play, pause, and volume-->
+
+                        <!--for play the audio-->
+                        <audio id="audioPlay-${value}" controls></audio>
+                    </div>
+
+                    <div class = "confirm1" style ="display:none;">
+                        <header>
+                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
+                        </header>
+                        <h3>Just to confirm, when exactly did the experience happen?</h3>
+                        <!--button for 'start recording'-->
+                        <p>
+                            <button type="button" name="start" id="btnStart-${value+1}" onclick="RecordingButtonStart(${value+1})">START RECORDING</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type="button" name="stop" id="btnStop-${value+1}" onclick="RecordingButtonStop2(${value+1},${index})">STOP RECORDING</button>
+                            <!--button for 'stop recording'-->
+                        </p>
+
+                        <!--for record-->
+                        <audio autoplay controls muted = 'true' style="display:none;"></audio>
+                        <audio id="audioPlay-${value+1}" controls></audio>
+                    </div>
+
+                    <div class = "rate1" style = "display:none">
+                        <header>
+                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
+                        </header>
+                        <div class="form-control">
+                            <div style='text-align: center; position: relative;'>
+                                <label for='scaleSlider'><h3>Rate this experience on a scale of strongly negative to strongly positive</h3></label>
+                                <br>
+                                <input type='range' id='scaleSlider-${index*2}' name='scaleSlider' style='width: 900px;' min='1' max='7' step='1' value='1' oninput='updateValue(this.value,${index*2})'>
+                                <div style='position: relative; width: 900px; margin-top: 10px;'>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 2%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 19%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 35%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 52%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 68%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 85%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 102%;'></div>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 0%;'>Strongly Negative</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 17%;'>Negative</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 33%;'>Somewhat Negative</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 50%;'>Neutral</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 66%;'>Somewhat Positive</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 83%;'>Positive</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 100%;'>Strongly Positive</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class = "posnegexpo1" style = "display:none">
+                        <p style="padding-bottom: 20px;"></p><hr /><h3>If your memory was positive, try telling me something negative, or if your memory was negative, try recalling a positive one.</h3>
+                        <!--button for 'start recording'-->
+                        <p>
+                            <button type="button" name="start" id="btnStart-${value+2}" onclick="RecordingButtonStart(${value+2})">START RECORDING</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type="button" name="stop" id="btnStop-${value+2}" onclick="RecordingButtonStop3(${value+2},${index})">STOP RECORDING</button>
+                            <!--button for 'stop recording'-->
+                        </p>
+
+                        <!--for record-->
+                        <audio autoplay controls muted = 'true' style="display:none;"></audio>
+                        <!--'controls' use for add 
+                            play, pause, and volume-->
+
+                        <!--for play the audio-->
+                        <audio id="audioPlay-${value+2}" controls></audio>
+                    </div>
+
+                    <div class = "rate2" style = "display:none">
+                        <header>
+                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
+                        </header>
+                        <div class="form-control">
+                            <div style='text-align: center; position: relative;'>
+                                <label for='scaleSlider'><h3>Rate this experience on a scale of strongly negative to strongly positive</h3></label>
+                                <br>
+                                <input type='range' id='scaleSlider-${index*2+1}' name='scaleSlider' style='width: 900px;' min='1' max='7' step='1' value='1' oninput='updateValue(this.value,${index*2+1})'>
+                                <div style='position: relative; width: 900px; margin-top: 10px;'>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 4%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 19%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 35%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 52%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 68%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 85%;'></div>
+                                    <div style='position: absolute; width: 1px; height: 20px; background-color: black; top: -5px; left: 102%;'></div>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 0%;'>Strongly Negative</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 17%;'>Negative</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 33%;'>Somewhat Negative</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 50%;'>Neutral</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 66%;'>Somewhat Positive</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 83%;'>Positive</span>
+                                    <span style='position: absolute; width: 5px; font-size: 12px; top: 20px; left: 100%;'>Strongly Positive</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class = "confirm2" style = "display:none">
+                        <p style="padding-bottom: 20px;"></p><hr /><h3>Just to confirm, when exactly did the experience happen?</h3>
+                        <!--button for 'start recording'-->
+                        <p>
+                            <button type="button" name="start" id="btnStart-${value+3}" onclick="RecordingButtonStart(${value+3})">START RECORDING</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type="button" name="stop" id="btnStop-${value+3}" onclick="RecordingButtonStop4(${value+3},${index})">STOP RECORDING</button>
+                            <!--button for 'stop recording'-->
+                        </p>
+
+                        <!--for record-->
+                        <audio autoplay controls muted = 'true' style="display:none;"></audio>
+                        <audio id="audioPlay-${value+3}" controls></audio>
+                    </div>
+                </div>
+            `;
+            document.getElementById('AQ').innerHTML += questionHTML;
+        })
+    </script>
+	<script>
+		// Set current tab to keep track of where the user is
+		var currentTab = 0
+
+		// Function that is identified below ; called to show present tab
+		showTab(currentTab);
+
+        function RecordingButtonStartTest() {
+            document.getElementById(`btnStart-test`).style.display = 'none'
+            document.getElementById('recordingStatus').style.display = 'inline';
+        }
+
+        function RecordingButtonStopTest() {
+            if (document.getElementById(`btnStart-test`).style.display == 'none'){
+                document.getElementById(`btnStop-test`).style.display = 'none'
+                document.getElementById('recordingStatus').style.display = 'none';
+                document.getElementById("checkBtn").style.display = "block";
+            }
+        }
+
+        function CheckAudio() {
+            if (testAudio[0].type.includes("audio/mp3;")) {
+                document.getElementById("nextBtn").style.display = "block";
+            } else {
+                document.getElementById("nextBtn").style.display = "none";
+                alert("Unfortunately your audio does not seem to be working");
+                var allTabs = document.getElementsByClassName('tab')
+                allTabs[1].style.display = "none"
+                allTabs[allTabs.length-1].style.display = "block"
+                document.getElementById("checkBtn").style.display = "none";
+            }
+        }
+
+        function blobToBase64(blob, callback) {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        callback(reader.result);
+                    };
+                    reader.readAsDataURL(blob);
+                }
+
+        function RecordingButtonStart(value) {
+            document.getElementById(`btnStart-${value}`).style.display = 'none'
+            document.getElementById('recordingStatus').style.display = 'inline';
+        }
+
+        function RecordingButtonStop1(value, index) {
+            if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
+                for(let i = 0;i<28;i++){
+                    // // audio is true, for recording
+
+                    // // Access the permission for use
+                    // // the microphone
+                    navigator.mediaDevices.getUserMedia({audio:true})
+
+                    // 'then()' method returns a Promise
+                    .then(function (mediaStreamObj) {
+
+                        // Connect the media stream to the
+                        // first audio element
+                        let audio = document.querySelector('audio');
+                        //returns the recorded audio via 'audio' tag
+
+                        // 'srcObject' is a property which 
+                        // takes the media object
+                        // This is supported in the newer browsers
+                        if ("srcObject" in audio) {
+                        audio.srcObject = mediaStreamObj;
+                        }
+                        else { // Old version
+                        audio.src = window.URL
+                            .createObjectURL(mediaStreamObj);
+                        }
+
+                        // It will play the audio
+                        // audio.onloadedmetadata = function (ev) {
+
+                        // // Play the audio in the 2nd audio
+                        // // element what is being recorded
+                        // audio.play();
+                        // };
+
+                        // Start record
+                        let start = document.getElementById(`btnStart-${i}`);
+
+                        // Stop record
+                        let stop = document.getElementById(`btnStop-${i}`);
+
+                        // 2nd audio tag for play the audio
+                        let playAudio = document.getElementById(`audioPlay-${i}`);
+
+                        // This is the main thing to recorded 
+                        // the audio 'MediaRecorder' API
+                        let mediaRecorder = new MediaRecorder(mediaStreamObj);
+                        // Pass the audio stream 
+
+                        // Start event
+                        start.addEventListener('click', function (ev) {
+                        mediaRecorder.start();
+                        // console.log(mediaRecorder.state);
+                        })
+
+                        // Stop event
+                        stop.addEventListener('click', function (ev) {
+                        mediaRecorder.stop();
+                        // console.log(mediaRecorder.state);
+                        });
+
+                        // If audio data available then push 
+                        // it to the chunk array
+                        mediaRecorder.ondataavailable = function (ev) {
+                        dataArray.push(ev.data);
+                        }
+
+                        // Chunk array to store the audio data 
+                        let dataArray = [];
+
+                        // Convert the audio data in to blob 
+                        // after stopping the recording
+                        mediaRecorder.onstop = function (ev) {
+
+                            // blob of type mp3
+                            let audioData = new Blob(dataArray, 
+                                        { 'type': 'audio/mp3;' });
+                            
+                            // After fill up the chunk 
+                            // array make it empty
+                            dataArray = [];
+
+                            // Creating audio url with reference 
+                            // of created blob named 'audioData'
+                            let audioSrc = window.URL
+                                .createObjectURL(audioData);
+
+                            // Pushing the audio file to an array outside function
+                            if(audioList[i]){
+                            }else{audioList.push(audioData)}
+
+                            // Pass the audio url to the 2nd video tag
+                            playAudio.src = audioSrc;
+                        }
+                    })
+                }			
+                document.getElementById(`btnStop-${value}`).style.display = 'none'
+                document.getElementById('recordingStatus').style.display = 'none';
+                document.getElementsByClassName("introQ")[index].style.display="none";
+                document.getElementsByClassName("confirm1")[index].style.display="block";
+            }
+        }
+
+        function RecordingButtonStop2(value, index) {
+            if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
+                document.getElementById(`btnStop-${value}`).style.display = 'none'
+                document.getElementById('recordingStatus').style.display = 'none';
+                document.getElementsByClassName("confirm1")[index].style.display="none";
+                document.getElementsByClassName("rate1")[index].style.display="block";
+            }
+        }
+
+        function RecordingButtonStop3(value, index) {
+            if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
+                document.getElementById(`btnStop-${value}`).style.display = 'none'
+                document.getElementById('recordingStatus').style.display = 'none';
+                document.getElementsByClassName("posnegexpo1")[index].style.display="none";
+                document.getElementsByClassName("rate1")[index].style.display="none";
+                document.getElementsByClassName("rate2")[index].style.display="block";
+            }
+        }
+
+        function RecordingButtonStop4(value, index) {
+            if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
+                document.getElementById(`btnStop-${value}`).style.display = 'none'
+                document.getElementById('recordingStatus').style.display = 'none';
+                document.getElementById("nextBtn").style.display="block" 
+            }
+        }
+
+		function showTab(n) {
+			var x = document.getElementsByClassName("tab")
+			x[0].style.display = "block"
+		}
+
+        var base64Audio = []
+
+		function nextPrev() {
+            document.getElementById("checkBtn").style.display = "none";
+            // audio is true, for recording
+
+            // Access the permission for use
+            // the microphone
+            navigator.mediaDevices.getUserMedia(audioIN)
+
+            // 'then()' method returns a Promise
+            .then(function (mediaStreamObj) {
+
+                // Connect the media stream to the
+                // first audio element
+                let audio = document.querySelector('audio');
+                //returns the recorded audio via 'audio' tag
+
+                // 'srcObject' is a property which 
+                // takes the media object
+                // This is supported in the newer browsers
+                if ("srcObject" in audio) {
+                audio.srcObject = mediaStreamObj;
+                }
+                else { // Old version
+                audio.src = window.URL
+                    .createObjectURL(mediaStreamObj);
+                }
+
+                // It will play the audio
+                // audio.onloadedmetadata = function (ev) {
+
+                // // Play the audio in the 2nd audio
+                // // element what is being recorded
+                // audio.play();
+                // };
+
+                // Start record
+                let start = document.getElementById(`btnStart-0`);
+
+                // Stop record
+                let stop = document.getElementById(`btnStop-0`);
+
+                // 2nd audio tag for play the audio
+                let playAudio = document.getElementById(`audioPlay-0`);
+
+                // This is the main thing to recorded 
+                // the audio 'MediaRecorder' API
+                let mediaRecorder = new MediaRecorder(mediaStreamObj);
+                // Pass the audio stream 
+
+                // Start event
+                start.addEventListener('click', function (ev) {
+                mediaRecorder.start();
+                // console.log(mediaRecorder.state);
+                })
+
+                // Stop event
+                stop.addEventListener('click', function (ev) {
+                mediaRecorder.stop();
+                // console.log(mediaRecorder.state);
+                });
+
+                // If audio data available then push 
+                // it to the chunk array
+                mediaRecorder.ondataavailable = function (ev) {
+                dataArray.push(ev.data);
+                }
+
+                // Chunk array to store the audio data 
+                let dataArray = [];
+
+                // Convert the audio data in to blob 
+                // after stopping the recording
+                mediaRecorder.onstop = function (ev) {
+
+                    // blob of type mp3
+                    let audioData = new Blob(dataArray, 
+                                { 'type': 'audio/mp3;' });
+                    
+                    // After fill up the chunk 
+                    // array make it empty
+                    dataArray = [];
+
+                    // Creating audio url with reference 
+                    // of created blob named 'audioData'
+                    let audioSrc = window.URL
+                        .createObjectURL(audioData);
+
+                    // Pushing the audio file to an array outside function
+                    audioList.push(audioData)
+                    
+
+                    // Pass the audio url to the 2nd video tag
+                    playAudio.src = audioSrc;
+                }
+            })
+            // If any error occurs then handles the error 
+            .catch(function (err) {
+                console.log(err.name, err.message);
+            });
+
+            var x = document.getElementsByClassName("tab");
+			// Remove current tab when calling next
+			x[currentTab].style.display = "none";
+			currentTab += 1
+			x[currentTab].style.display = "block"
+			window.scrollTo(0,0)
+			if (currentTab == x.length - 1){
+				document.getElementById("nextBtn").style.display="none"
+                demographics = [document.getElementById("IDvalue").value, document.getElementById("ProlificIDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
+
+                for (let i=0;i<28;i++){
+                    blobToBase64(audioList[i], function(base64) {
+                        base64Audio[i] = base64
+                    });
+                }
+                var sliderValue = []
+                for (let i = 0;i<document.getElementsByName('scaleSlider').length;i++) {
+                    sliderValue[i] = document.getElementsByName('scaleSlider')[i].value
+                }
+
+                var DemographicsString = JSON.stringify(demographics)
+                var sliderValueString = JSON.stringify(sliderValue)
+
+
+                localStorage.setItem("Demographics", DemographicsString)
+                localStorage.setItem("SliderValues",sliderValueString)
+			}
+             document.getElementById("nextBtn").style.display="none" 
+		}
+
+        // const button = document.getElementById('myButton');
+
+        // function handleClick(event) {
+        //     event.stopPropagation();
+        //     event.preventDefault();
+
+        //     console.log('Button clicked');
+        //     // Your code here
+        // }
+
+        // button.addEventListener('click', handleClick);
+
+
+    
+
+        function showNextButton() {
+            document.getElementsByClassName('Next')[0].style.display = 'block';
+        }
+
+        let sliderValueVariable = 0;
+        function updateValue(value,scaledIndex) {
+            sliderValueVariable = value;
+            document.getElementById(`scaleSlider-${scaledIndex}`).textContent = value;
+            if (scaledIndex % 2 == 0){
+                var index = scaledIndex/2
+                document.getElementsByClassName('posnegexpo1')[index].style.display = 'block';
+            }else {
+                var index = (scaledIndex - 1)/2
+                document.getElementsByClassName('confirm2')[index].style.display = 'block';
+                
+            }
+        }
+
+	</script>
+    <script>
+        document.getElementById('gender').addEventListener('change', function() {
+            Gendervalue = this.value;
+            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+                document.getElementById("nextBtn").style.display = "block"
+            }
+        });
+        document.getElementById('role').addEventListener('change', function() {
+            Rolevalue = this.value;
+            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+                document.getElementById("nextBtn").style.display = "block"
+            }
+        });
+
+        document.getElementById('IDvalue').addEventListener('change', function() {
+            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+                document.getElementById("nextBtn").style.display = "block"
+            }
+        });
+
+        document.getElementById('Agevalue').addEventListener('change', function() {
+            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+                document.getElementById("nextBtn").style.display = "block"
+            }
+        });
+
+        function data(){
+            SubID = document.getElementById("IDvalue").value
+            demographics = [document.getElementById("IDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
+        }
+        if (currentTab ==0){
+            document.getElementById("nextBtn").style.display = "none"
+        }
+        
+
+
+    </script>
+</body>
+
+</html>
