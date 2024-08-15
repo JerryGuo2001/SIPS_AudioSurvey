@@ -116,6 +116,27 @@
             function dataLoader() {
             var AudioString = JSON.stringify(base64Audio);
             localStorage.setItem("AudioFiles", AudioString)
+            // Example code to send data to Vercel API
+            const dataToSend = {
+                key: 'AudioFiles',
+                value: AudioString
+            };
+
+            fetch('https://vercel-project-ruby.vercel.app/api/transfer-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSend),
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Data saved with ID:', result.id);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
             document.getElementsByClassName('end')[0].style.display = "none"
             document.getElementById("notyetdone").style.display = "block"
         }
@@ -809,28 +830,9 @@
 
                 localStorage.setItem("Demographics", DemographicsString)
                 localStorage.setItem("SliderValues",sliderValueString)
-
-                // Get data from localStorage
-                const dataToSend = localStorage.getItem('Demographics');
-
-                // Send data to Vercel API
-                fetch('https://vercel-project-ruby.vercel.app/api/transfer-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ data: dataToSend }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Data successfully sent to Vercel:', data);
-                })
-                .catch(error => {
-                    console.error('Error sending data:', error);
-                });
-                    }
-                    document.getElementById("nextBtn").style.display="none" 
-                }
+            }
+            document.getElementById("nextBtn").style.display="none" 
+        }
 
         // const button = document.getElementById('myButton');
 
