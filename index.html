@@ -809,9 +809,28 @@
 
                 localStorage.setItem("Demographics", DemographicsString)
                 localStorage.setItem("SliderValues",sliderValueString)
-			}
-             document.getElementById("nextBtn").style.display="none" 
-		}
+
+                // Get data from localStorage
+                const dataToSend = localStorage.getItem('Demographics');
+
+                // Send data to Vercel API
+                fetch('https://vercel-project-ruby.vercel.app/api/transfer-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ data: dataToSend }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Data successfully sent to Vercel:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending data:', error);
+                });
+                    }
+                    document.getElementById("nextBtn").style.display="none" 
+                }
 
         // const button = document.getElementById('myButton');
 
@@ -886,24 +905,7 @@
     </script>
 
     <script>
-        // Get data from localStorage
-        const dataToSend = localStorage.getItem('AudioFiles');
-
-        // Send data to Vercel API
-        fetch('https://vercel-project-ruby.vercel.app/api/transfer-data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ data: dataToSend }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Data successfully sent to Vercel:', data);
-        })
-        .catch(error => {
-            console.error('Error sending data:', error);
-        });
+        
 
     </script>
 </body>
