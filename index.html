@@ -804,7 +804,7 @@
 			window.scrollTo(0,0)
 			if (currentTab == x.length - 1){
 				document.getElementById("nextBtn").style.display="none"
-                demographics = [document.getElementById("IDvalue").value, document.getElementById("ProlificIDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
+                demographics = [document.getElementById("ProlificIDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
 
                 for (let i=0;i<28;i++){
                     blobToBase64(audioList[i], function(base64) {
@@ -863,32 +863,31 @@
     <script>
         document.getElementById('gender').addEventListener('change', function() {
             Gendervalue = this.value;
-            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+            if (document.getElementById("ProlificIDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
                 document.getElementById("nextBtn").style.display = "block"
             }
         });
         document.getElementById('role').addEventListener('change', function() {
             Rolevalue = this.value;
-            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+            if (document.getElementById("ProlificIDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
                 document.getElementById("nextBtn").style.display = "block"
             }
         });
 
-        document.getElementById('IDvalue').addEventListener('change', function() {
-            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+        document.getElementById('ProlificIDvalue').addEventListener('change', function() {
+            if (document.getElementById("ProlificIDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
                 document.getElementById("nextBtn").style.display = "block"
             }
         });
 
         document.getElementById('Agevalue').addEventListener('change', function() {
-            if (document.getElementById("IDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
+            if (document.getElementById("ProlificIDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
                 document.getElementById("nextBtn").style.display = "block"
             }
         });
 
         function data(){
-            SubID = document.getElementById("IDvalue").value
-            demographics = [document.getElementById("IDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
+            demographics = [document.getElementById('ProlificIDvalue'), document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
         }
         if (currentTab ==0){
             document.getElementById("nextBtn").style.display = "none"
