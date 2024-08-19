@@ -117,6 +117,7 @@
             function dataLoader() {
             var AudioString = JSON.stringify(base64Audio);
             localStorage.setItem("AudioFiles", AudioString)
+            localStorage.setItem("CombinedResponses", JSON.stringify(JSON.parse(localStorage.Demographics).concat(JSON.parse(localStorage.SliderValues),JSON.parse(localStorage.AudioFiles))))
             // Example code to send data to Vercel API
             const dataToSend = {
                 key: 'AudioFiles',
@@ -361,7 +362,6 @@
         const SurveyQuestions = [
             //Non-Alcohol Questions
             "What is a significant memory from your childhood that you still vividly remember?",
-            "Can you recall a time when you faced a significant challenge and how you overcame it?",
             "What is a recent memory that stands out to you, and why does it feel significant?",
             //Alcohol Questions
             "Can you tell me about the first time you tried alcohol? How old were you, how did it make you feel?",
@@ -561,7 +561,7 @@
 
         function RecordingButtonStop1(value, index) {
             if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
-                for(let i = 0;i<28;i++){
+                for(let i = 0;i<(4*SurveyQuestions.length);i++){
                     // // audio is true, for recording
 
                     // // Access the permission for use
@@ -807,7 +807,7 @@
 				document.getElementById("nextBtn").style.display="none"
                 demographics = [document.getElementById("ProlificIDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
 
-                for (let i=0;i<28;i++){
+                for (let i=0;i<(4*SurveyQuestions.length);i++){
                     blobToBase64(audioList[i], function(base64) {
                         base64Audio[i] = base64
                     });
