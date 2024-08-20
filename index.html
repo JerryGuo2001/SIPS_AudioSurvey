@@ -255,7 +255,7 @@
             // Example code to send data to Vercel API
             let id = demographics[0]
             let dem = [demographics[1],demographics[2],demographics[3]]
-            let slider = sliderValue
+            let slider = JSON.parse(localStorage.SliderValues)
             let audio = AudioString
             saveData(id,dem,slider,audio)
         }
