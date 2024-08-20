@@ -229,11 +229,11 @@
 </head>
 
 <body>
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.1.0/dist/umd/supabase.js';
+    <script>
+        
         const supabaseUrl = 'https://pxjzoermcszmmxyuuqbp.supabase.co'; // Replace with your Supabase URL
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4anpvZXJtY3N6bW14eXV1cWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQxMzEwMzYsImV4cCI6MjAzOTcwNzAzNn0.3EArFOjKoLCRp7yOpVKuqfZasOYW8_A-1WBSZuG9VmM'; // Replace with your Supabase anon/public key
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        const supabase1 = supabase.createClient(supabaseUrl, supabaseKey);
 
              // Example: Save data to Supabase
              async function saveData(key, value) {
