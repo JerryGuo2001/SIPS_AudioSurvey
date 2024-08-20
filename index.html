@@ -116,12 +116,12 @@
 
             function dataLoader() {
             var AudioString = JSON.stringify(base64Audio);
-            localStorage.setItem("AudioFiles", AudioString)
-            localStorage.setItem("CombinedResponses", JSON.stringify(JSON.parse(localStorage.Demographics).concat(JSON.parse(localStorage.SliderValues),JSON.parse(localStorage.AudioFiles))))
+            // localStorage.setItem("AudioFiles", AudioString)
+            // localStorage.setItem("CombinedResponses", JSON.stringify(JSON.parse(localStorage.Demographics).concat(JSON.parse(localStorage.SliderValues),JSON.parse(localStorage.AudioFiles))))
             // Example code to send data to Vercel API
             const dataToSend = {
                 key: 'AudioFiles',
-                value: localStorage.CombinedResponses
+                value: AudioString
             };
 
             fetch('https://vercel-project-ruby.vercel.app/api/transfer-data', {
