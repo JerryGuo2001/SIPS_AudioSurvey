@@ -236,10 +236,10 @@
         const supabase1 = supabase.createClient(supabaseUrl, supabaseKey); 
 
              // Example: Save data to Supabase
-             async function saveData(key, value) {
+             async function saveData(id, dem, slider, audio) {
             const { data, error } = await supabase1
                 .from('data_store')
-                .insert([{ key: key, value: value }]);
+                .insert([{ id: id, demographics: dem, slider_values: slider, audio_data: audio }]);
 
             if (error) {
                 console.error('Error saving data:', error);
@@ -253,11 +253,11 @@
             // localStorage.setItem("AudioFiles", AudioString)
             // localStorage.setItem("CombinedResponses", JSON.stringify(JSON.parse(localStorage.Demographics).concat(JSON.parse(localStorage.SliderValues),JSON.parse(localStorage.AudioFiles))))
             // Example code to send data to Vercel API
-            const dataToSend = {
-                key: 'AudioFiles',
-                value: AudioString
-            };
-            saveData(dataToSend.key,dataToSend)
+            let id = demographics[0]
+            let dem = [demographics[1],demographics[2],demographics[3]]
+            let slider = sliderValue
+            let audio = AudioString
+            saveData(id,dem,slider,audio)
         }
     </script>
 	<form id="form">
