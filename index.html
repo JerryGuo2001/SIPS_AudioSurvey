@@ -258,6 +258,7 @@
             let slider = JSON.parse(localStorage.SliderValues)
             let audio = AudioString
             saveData(id,dem,slider,audio)
+            document.getElementsByClassName[0].style.display = "none"
         }
     </script>
 	<form id="form">
@@ -342,8 +343,7 @@
 
 		<div class = "tab">
             <h1> Thank you for your participation!</h1>
-            <h3>Click the button below to continue the survey </h3>
-            <div id='notyetdone' style="display:none"><button onclick="window.close();">Next</button></div>
+            <h3>Click the button below to finish the survey </h3>
             <div class = "end">
                 <button type="button" id="loadData" value="load" onclick="dataLoader()">Save Data</button>
             </div>
