@@ -237,7 +237,7 @@
 
              // Example: Save data to Supabase
              async function saveData(key, value) {
-            const { data, error } = await supabase
+            const { data, error } = await supabase1
                 .from('data_store')
                 .insert([{ key: key, value: value }]);
 
