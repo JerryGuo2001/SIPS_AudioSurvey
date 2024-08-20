@@ -10,6 +10,8 @@
 	<title>
 		SIS Audio Survey
 	</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.js"></script>
+</head>
 	<script>
         localStorage.clear()
         testAudio = []
@@ -17,104 +19,121 @@
         SubID = []
         demographics = []
         // audio is true, for recording
-            const audioIN = { audio: true}
-            // Access the permission for use
-            // the microphone
-            navigator.mediaDevices.getUserMedia(audioIN)
+        const audioIN = { audio: true}
+        // Access the permission for use
+        // the microphone
+        navigator.mediaDevices.getUserMedia(audioIN)
 
-            // 'then()' method returns a Promise
-            .then(function (mediaStreamObj) {
+        // 'then()' method returns a Promise
+        .then(function (mediaStreamObj) {
 
-                // Connect the media stream to the
-                // first audio element
-                let audio = document.querySelector('audio');
-                //returns the recorded audio via 'audio' tag
+            // Connect the media stream to the
+            // first audio element
+            let audio = document.querySelector('audio');
+            //returns the recorded audio via 'audio' tag
 
-                // 'srcObject' is a property which 
-                // takes the media object
-                // This is supported in the newer browsers
-                if ("srcObject" in audio) {
-                audio.srcObject = mediaStreamObj;
-                }
-                else { // Old version
-                audio.src = window.URL
-                    .createObjectURL(mediaStreamObj);
-                }
+            // 'srcObject' is a property which 
+            // takes the media object
+            // This is supported in the newer browsers
+            if ("srcObject" in audio) {
+            audio.srcObject = mediaStreamObj;
+            }
+            else { // Old version
+            audio.src = window.URL
+                .createObjectURL(mediaStreamObj);
+            }
 
-                // It will play the audio
-                // audio.onloadedmetadata = function (ev) {
+            // It will play the audio
+            // audio.onloadedmetadata = function (ev) {
 
-                // // Play the audio in the 2nd audio
-                // // element what is being recorded
-                // audio.play();
-                // };
+            // // Play the audio in the 2nd audio
+            // // element what is being recorded
+            // audio.play();
+            // };
 
-                // Start record
-                let start = document.getElementById(`btnStart-test`);
+            // Start record
+            let start = document.getElementById(`btnStart-test`);
 
-                // Stop record
-                let stop = document.getElementById(`btnStop-test`);
+            // Stop record
+            let stop = document.getElementById(`btnStop-test`);
 
-                // 2nd audio tag for play the audio
-                let playAudio = document.getElementById(`audioPlay-test`);
+            // 2nd audio tag for play the audio
+            let playAudio = document.getElementById(`audioPlay-test`);
 
-                // This is the main thing to recorded 
-                // the audio 'MediaRecorder' API
-                let mediaRecorder = new MediaRecorder(mediaStreamObj);
-                // Pass the audio stream 
+            // This is the main thing to recorded 
+            // the audio 'MediaRecorder' API
+            let mediaRecorder = new MediaRecorder(mediaStreamObj);
+            // Pass the audio stream 
 
-                // Start event
-                start.addEventListener('click', function (ev) {
-                mediaRecorder.start();
-                // console.log(mediaRecorder.state);
-                })
-
-                // Stop event
-                stop.addEventListener('click', function (ev) {
-                mediaRecorder.stop();
-                // console.log(mediaRecorder.state);
-                });
-
-                // If audio data available then push 
-                // it to the chunk array
-                mediaRecorder.ondataavailable = function (ev) {
-                dataArray.push(ev.data);
-                }
-
-                // Chunk array to store the audio data 
-                let dataArray = [];
-
-                // Convert the audio data in to blob 
-                // after stopping the recording
-                mediaRecorder.onstop = function (ev) {
-
-                    // blob of type mp3
-                    let audioData = new Blob(dataArray, 
-                                { 'type': 'audio/mp3;' });
-                    
-                    // After fill up the chunk 
-                    // array make it empty
-                    dataArray = [];
-
-                    // Creating audio url with reference 
-                    // of created blob named 'audioData'
-                    let audioSrc = window.URL
-                        .createObjectURL(audioData);
-
-                    // Pushing the audio file to an array outside function
-                    testAudio.push(audioData)
-                    
-
-                    // Pass the audio url to the 2nd video tag
-                    playAudio.src = audioSrc;
-                }
+            // Start event
+            start.addEventListener('click', function (ev) {
+            mediaRecorder.start();
+            // console.log(mediaRecorder.state);
             })
-            // If any error occurs then handles the error 
-            .catch(function (err) {
-                console.log(err.name, err.message);
+
+            // Stop event
+            stop.addEventListener('click', function (ev) {
+            mediaRecorder.stop();
+            // console.log(mediaRecorder.state);
             });
 
-            function dataLoader() {
+            // If audio data available then push 
+            // it to the chunk array
+            mediaRecorder.ondataavailable = function (ev) {
+            dataArray.push(ev.data);
+            }
+
+            // Chunk array to store the audio data 
+            let dataArray = [];
+
+            // Convert the audio data in to blob 
+            // after stopping the recording
+            mediaRecorder.onstop = function (ev) {
+
+                // blob of type mp3
+                let audioData = new Blob(dataArray, 
+                            { 'type': 'audio/mp3;' });
+                
+                // After fill up the chunk 
+                // array make it empty
+                dataArray = [];
+
+                // Creating audio url with reference 
+                // of created blob named 'audioData'
+                let audioSrc = window.URL
+                    .createObjectURL(audioData);
+
+                // Pushing the audio file to an array outside function
+                testAudio.push(audioData)
+                
+
+                // Pass the audio url to the 2nd video tag
+                playAudio.src = audioSrc;
+            }
+        })
+        // If any error occurs then handles the error 
+        .catch(function (err) {
+            console.log(err.name, err.message);
+        });
+
+        const supabaseUrl = 'https://pxjzoermcszmmxyuuqbp.supabase.co'; // Replace with your Supabase URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4anpvZXJtY3N6bW14eXV1cWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQxMzEwMzYsImV4cCI6MjAzOTcwNzAzNn0.3EArFOjKoLCRp7yOpVKuqfZasOYW8_A-1WBSZuG9VmM'; // Replace with your Supabase anon/public key
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Example: Save data to Supabase
+        async function saveData(key, value) {
+            const { data, error } = await supabase
+                .from('data_store')
+                .insert([{ key: key, value: value }]);
+
+            if (error) {
+                console.error('Error saving data:', error);
+            } else {
+                console.log('Data saved:', data);
+            }
+        }
+
+        function dataLoader() {
             var AudioString = JSON.stringify(base64Audio);
             // localStorage.setItem("AudioFiles", AudioString)
             // localStorage.setItem("CombinedResponses", JSON.stringify(JSON.parse(localStorage.Demographics).concat(JSON.parse(localStorage.SliderValues),JSON.parse(localStorage.AudioFiles))))
@@ -123,25 +142,11 @@
                 key: 'AudioFiles',
                 value: AudioString
             };
-
-            fetch('https://vercel-project-ruby.vercel.app/api/transfer-data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dataToSend),
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log('Data saved with ID:', result.id);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-            document.getElementsByClassName('end')[0].style.display = "none"
-            document.getElementById("notyetdone").style.display = "block"
+            saveData(dataToSend.key,dataToSend.value)
         }
+
+        
+
 	</script>
 	<style>
 		/* Styling the Body element 
