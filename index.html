@@ -11,9 +11,9 @@
 		SIS Audio Survey
 	</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.1.0/dist/umd/supabase.js"></script>
 </head>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.js">
+	<script>
         localStorage.clear()
         testAudio = []
 		audioList = []
@@ -143,7 +143,7 @@
                 key: 'AudioFiles',
                 value: AudioString
             };
-            saveData(dataToSend.key,dataToSend.value)
+            saveData(dataToSend.key,dataToSend)
         }
 
         
