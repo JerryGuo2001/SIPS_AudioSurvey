@@ -239,7 +239,11 @@
              async function saveData(id, dem, slider, audio) {
             const { data, error } = await supabase1
                 .from('data_store')
-                .insert([{ id: id, demographics: dem, slider_values: slider, audio_data: audio }]);
+                .insert([{ id: id, demographics: dem, slider_values: slider, audio_data_1: audio[0], audio_data_2: audio[1], audio_data_3: audio[2], audio_data_4: audio[3]
+                    , audio_data_5: audio[4], audio_data_6: audio[5], audio_data_7: audio[6], audio_data_8: audio[7], audio_data_9: audio[8], audio_data_10: audio[9], audio_data_11: audio[10]
+                    , audio_data_12: audio[11], audio_data_13: audio[12], audio_data_14: audio[13], audio_data_15: audio[14], audio_data_16: audio[15], audio_data_17: audio[16], audio_data_18: audio[17],
+                    audio_data_19: audio[18], audio_data_20: audio[19], audio_data_21: audio[20], audio_data_22: audio[21], audio_data_23: audio[22], audio_data_24: audio[23]
+                 }]);
 
             if (error) {
                 console.error('Error saving data:', error);
@@ -256,7 +260,7 @@
             let id = demographics[0]
             let dem = [demographics[1],demographics[2],demographics[3]]
             let slider = JSON.parse(localStorage.SliderValues)
-            let audio = AudioString
+            let audio = base64Audio
             saveData(id,dem,slider,audio)
             document.getElementsByClassName("end")[0].style.display = "none"
         }
