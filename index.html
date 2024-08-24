@@ -269,7 +269,7 @@
         <div class = "tab"><h1>SIS Audio</h1>
             <div class="form-control">
                 <label for="Prolific" id="label-Prolific" >
-                    Prolific ID
+                    Prolific ID <sup>*</sup>
                 </label>
                 <input type="text" id="ProlificIDvalue"
                     placeholder="Experimenter: enter your Prolific ID" />
@@ -277,7 +277,7 @@
             </div>
             <div class = "form-control">
                 <label for="Age" id="label-Age" value = Age>
-                    Age
+                    Age <sup>*</sup>
                 </label>
                 <input type="text" id="Agevalue"
                     placeholder="Enter your age" />
@@ -285,7 +285,7 @@
             </div>
             <div class="form-control">
                 <label for="gender" id="label-gender">
-                    Gender
+                    Gender <sup>*</sup>
                 </label>
                 <!-- Dropdown options -->
                 <select name="gender" id="gender">
@@ -299,7 +299,7 @@
             </div>
             <div class="form-control">
                 <label for="role" id="label-role">
-                    Education Level?
+                    Education Level? <sup>*</sup>
                 </label>
                 <!-- Dropdown options -->
                 <select name="role" id="role">
@@ -311,6 +311,7 @@
                     <option value="Graduate Degree">Graduate Degree</option>
                 </select>
             </div>
+            <span style="display: inline; margin-left: 70%;"><small>* indicates a required question</small></span>
         </div>
 
         <div class = "tab">
@@ -527,8 +528,13 @@
 		// Set current tab to keep track of where the user is
 		var currentTab = 0
 
+        
 		// Function that is identified below ; called to show present tab
 		showTab(currentTab);
+
+        if (currentTab == 0){
+            alert("Please ensure you accept audio permissions before continuing the survey, it might take a couple seconds to appear.");
+        }
 
         function RecordingButtonStartTest() {
             document.getElementById(`btnStart-test`).style.display = 'none'
