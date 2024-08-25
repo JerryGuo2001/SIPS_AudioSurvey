@@ -303,7 +303,7 @@
                 .insert([{ id: id, demographics: dem, slider_values: slider, audio_data_1: audio[0], audio_data_2: audio[1], audio_data_3: audio[2], audio_data_4: audio[3]
                     , audio_data_5: audio[4], audio_data_6: audio[5], audio_data_7: audio[6], audio_data_8: audio[7], audio_data_9: audio[8], audio_data_10: audio[9], audio_data_11: audio[10]
                     , audio_data_12: audio[11], audio_data_13: audio[12], audio_data_14: audio[13], audio_data_15: audio[14], audio_data_16: audio[15], audio_data_17: audio[16], audio_data_18: audio[17],
-                    audio_data_19: audio[18], audio_data_20: audio[19], audio_data_21: audio[20], audio_data_22: audio[21], audio_data_23: audio[22], audio_data_24: audio[23]
+                    audio_data_19: audio[18], audio_data_20: audio[19]
                  }]);
 
             if (error) {
@@ -477,7 +477,7 @@
                     </div>
 
                     <div class = "confirm1" style ="display:none;">
-                        <h3>Just to confirm, when exactly did the experience happen?</h3>
+                        <h3 class = 'confirmLabel'>Just to confirm, when exactly did the experience happen?</h3>
                         <!--button for 'start recording'-->
                         <p>
                             <button type="button" name="start" id="btnStart-${value+1}" onclick="RecordingButtonStart(${value+1})">START RECORDING</button>
@@ -494,7 +494,7 @@
                     <div class = "rate1" style = "display:none">
                         <div class="form-control">
                             <div style='text-align: center; position: relative;'>
-                                <label for='scaleSlider'><h3>Rate this experience on a scale of strongly negative to strongly positive</h3></label>
+                                <label for='scaleSlider' class ='scaledLabel'><h3>Rate this experience on a scale of strongly negative to strongly positive</h3></label>
                                 <br>
                                 <input type='range' id='scaleSlider-${index*2}' name='scaleSlider' style='width: 900px;' min='1' max='7' step='1' value='1' oninput='updateValue(this.value,${index*2})'>
                                 <div style='position: relative; width: 900px; margin-top: 10px;'>
@@ -519,7 +519,7 @@
                     </div>
 
                     <div class = "posnegexpo1" style = "display:none">
-                        <p class="posnegline" style="padding-bottom: 20px;"></p><hr /><h3>If your memory was <u>positive</u>, try telling me something <i>negative</i>. If your memory was <u>negative</u>, try recalling a <i>positive</i> one. If it is a <u>neutral</u> experience tell another <i>related story</i>.</h3>
+                        <p class="posnegline" style="padding-bottom: 20px;"></p><hr /><h3 class = 'posnegLabel'>If your memory was <u>positive</u>, try telling me something <i>negative</i>. If your memory was <u>negative</u>, try recalling a <i>positive</i> one. If it is a <u>neutral</u> experience tell another <i>related story</i>.</h3>
                         <!--button for 'start recording'-->
                         <p>
                             <button type="button" name="start" id="btnStart-${value+2}" onclick="RecordingButtonStart(${value+2})">START RECORDING</button>
@@ -723,8 +723,14 @@
                                 .createObjectURL(audioData);
 
                             // Pushing the audio file to an array outside function
-                            if(audioList[i]){
-                            }else{audioList.push(audioData)}
+                            if(i != 1){
+                                if(audioList[i]){
+                                }else{audioList.push(audioData)}
+                            }else{
+                                audioList.push(audioData)
+                                audioList.splice(1,1)
+                            }
+                            
 
                             // Pass the audio url to the 2nd video tag
                             playAudio.src = audioSrc;
@@ -734,7 +740,18 @@
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
                 document.getElementsByClassName("divider")[index].style.display="block";
-                document.getElementsByClassName("confirm1")[index].style.display="block";
+                if(index != 4 && index != 5){
+                    document.getElementsByClassName("confirm1")[index].style.display="block";
+                }else if (index == 4){
+                    document.getElementsByClassName("rate1")[index].style.display="block";
+                    document.getElementsByClassName("scaledLabel")[index].innerHTML = '<h3>How would you say your current perspective on drinking is?</h3>';
+                    document.getElementsByClassName("posnegLabel")[index].innerHTML = 'If your perspective is more <u>positive</u>, try telling me something <i>negative</i>. If your perspective was more <u>negative</u>, try recalling a <i>positive</i> one. If it is <u>neutral</u>, talk about a <i>different</i> perspective.'
+                }else if (index == 5){
+                    document.getElementsByClassName("confirmLabel")[index].innerHTML = 'Can you mention some exact points where your perspective has changed on drinking?';
+                    document.getElementsByClassName("scaledLabel")[index].innerHTML = '<h3>Overall, how would you rate your experience with alcohol?</h3>';
+                    document.getElementsByClassName("confirm1")[index].style.display="block";
+                }
+                
                 document.getElementsByClassName("introspace")[index].style.display="none";
             }
         }
@@ -746,17 +763,22 @@
                 document.getElementsByClassName("confirm1")[index].style.display="none";
                 document.getElementsByClassName("rate1")[index].style.display="block";
             }
+            
         }
 
         function RecordingButtonStop3(value, index) {
             if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
-                document.getElementsByClassName("divider")[index].style.display="none";
-                
-                document.getElementsByClassName("posnegline")[index].style.paddingBottom="0px";
-                document.getElementsByClassName("rate1")[index].style.display="none";
-                document.getElementsByClassName("rate2")[index].style.display="block";
+
+                if(index != 4){
+                    document.getElementsByClassName("divider")[index].style.display="none";
+                    document.getElementsByClassName("posnegline")[index].style.paddingBottom="0px";
+                    document.getElementsByClassName("rate1")[index].style.display="none";
+                    document.getElementsByClassName("rate2")[index].style.display="block";
+                } else{
+                    document.getElementById("nextBtn").style.display="block" 
+                }
             }
         }
 
@@ -885,7 +907,9 @@
 				document.getElementById("nextBtn").style.display="none"
                 demographics = [document.getElementById("ProlificIDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
 
-                for (let i=0;i<(4*SurveyQuestions.length);i++){
+                audioList.splice(18,1)
+                audioList.splice(19,1)
+                for (let i=0;i<(4*SurveyQuestions.length-4);i++){
                     blobToBase64(audioList[i], function(base64) {
                         base64Audio[i] = base64
                     });
@@ -930,7 +954,12 @@
             document.getElementById(`scaleSlider-${scaledIndex}`).textContent = value;
             if (scaledIndex % 2 == 0){
                 var index = scaledIndex/2
-                document.getElementsByClassName('posnegexpo1')[index].style.display = 'block';
+                if (index !=5){
+                    document.getElementsByClassName('posnegexpo1')[index].style.display = 'block';
+                }else{
+                    document.getElementById("nextBtn").style.display="block" 
+                }
+                
             }else {
                 var index = (scaledIndex - 1)/2
                 document.getElementsByClassName('confirm2')[index].style.display = 'block';
