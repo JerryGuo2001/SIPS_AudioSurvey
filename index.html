@@ -176,22 +176,25 @@
 		/* Styling Button */
 		#nextBtn {
 			background-color: #05c46b;
-			border: 1px solid #777;
-			border-radius: 2px;
+			border: none;
+			border-radius: 5px;
 			font-family: inherit;
 			font-size: 21px;
 			display: block;
 			width: 30%;
 			margin-top: 50px;
 			margin-bottom: 20px;
-            margin-left: 20px;
-            float: right
+            margin-right: 30px;
+            float: right;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
 		}
 
         #checkBtn {
 			background-color: #4258c7;
-			border: 1px solid #777;
-			border-radius: 2px;
+			border: none;
+			border-radius: 5px;
 			font-family: inherit;
 			font-size: 21px;
 			display: block;
@@ -199,8 +202,20 @@
 			margin-top: 50px;
 			margin-bottom: 20px;
             margin-left: 20px;
-            float: left
+            float: left;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
 		}
+        #nextBtn:hover, #checkBtn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Active/Pressed effect for buttons */
+        #nextBtn:active, #checkBtn:active {
+            transform: scale(0.95);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
        .Next {
             display: block
@@ -219,11 +234,57 @@
 		}
 
         .Start {
-            display: block
+            display: block;
         }
 
         .Stop {
-            display: block
+            display: block;
+        }
+        
+        [id^="btnStart-"], [id^="btnStop-"] {
+            padding: 10px 20px; 
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        [id^="btnStart-"] {
+            background-color: #06b563;
+            color: black;
+        }
+
+        [id^="btnStop-"] {
+            background-color: rgb(247, 76, 76);
+            color: black;
+        }
+
+        /* Hover effect for buttons */
+        [id^="btnStart-"]:hover, [id^="btnStop-"]:hover {
+            transform: scale(1.05);
+        }
+
+        /* Active/Pressed effect for buttons */
+        [id^="btnStart-"]:active, [id^="btnStop-"]:active {
+            transform: scale(0.95);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #loadData {
+            background-color: #d3d3d3; /* Muted color */
+            color: #333; /* Dark text color */
+            border: none; /* Remove default border */
+            padding: 10px 20px; /* Add padding */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+        #loadData.clicked {
+            background-color: #4CAF50; /* Green color when clicked */
+            color: white; /* White text color when clicked */
         }
 	</style>
 </head>
@@ -262,7 +323,9 @@
             let slider = JSON.parse(localStorage.SliderValues)
             let audio = base64Audio
             saveData(id,dem,slider,audio)
-            document.getElementsByClassName("end")[0].style.display = "none"
+            var button = document.getElementById('loadData');
+            button.textContent = 'Data saved!';
+            button.classList.add('clicked');
         }
     </script>
 	<form id="form">
@@ -317,7 +380,7 @@
         <div class = "tab">
             <div class = "audioTest">
                 <header>
-                    <h1>SIS Audio Check</h1><p>This is a test to see if your audio is properly working. After stopping the recording, press the check button to ensure your data will be properly saved. </p> </n> <p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
+                    <h1>SIS Audio Check</h1><p>This is a test to see if your audio is properly working. After stopping the recording, press the check button to ensure your data will be properly saved. </p> </n> <p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak in as much detail as you can about the topic.</p><hr />
                 </header>
                 
                 <h3>What did you eat for breakfast this morning?</h3>
@@ -344,7 +407,7 @@
         </div>
 		<!-- Question 1 end -->
 
-        <p id="recordingStatus" style="color:red;display:none">Recording...</p>
+        <p id="recordingStatus" style="color: red; display: none; font-weight: bold;  font-family: 'Courier New', Courier, 'Lucida Console', monospace; font-size: 18px; letter-spacing: 1px; margin-left: 30px;">Recording...</p>
 
 		<div class = "tab">
             <h1> Thank you for your participation!</h1>
@@ -387,12 +450,17 @@
                 `<div class = "tab">
                     <div class = "introQ">
                         <header>
-                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
+                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak in as much detail as you can about the topic.</p><hr />
                         </header>
+
+                        
                         
                         <h3>${question}</h3>
+                        <div class = "divider" style = "display:none">
+                            <hr />
+                        </div>
                         <!--button for 'start recording'-->
-                        <p>
+                        <p class = "introspace" style="display:block">
                             <button type="button" name="start" id="btnStart-${value}" onclick="RecordingButtonStart(${value})">START RECORDING</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                             <button type="button" name="stop" id="btnStop-${value}" onclick="RecordingButtonStop1(${value},${index})">STOP RECORDING</button>
@@ -405,13 +473,10 @@
                             play, pause, and volume-->
 
                         <!--for play the audio-->
-                        <audio id="audioPlay-${value}" controls></audio>
+                        <audio id="audioPlay-${value}" ></audio>
                     </div>
 
                     <div class = "confirm1" style ="display:none;">
-                        <header>
-                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
-                        </header>
                         <h3>Just to confirm, when exactly did the experience happen?</h3>
                         <!--button for 'start recording'-->
                         <p>
@@ -423,13 +488,10 @@
 
                         <!--for record-->
                         <audio autoplay controls muted = 'true' style="display:none;"></audio>
-                        <audio id="audioPlay-${value+1}" controls></audio>
+                        <audio id="audioPlay-${value+1}" ></audio>
                     </div>
 
                     <div class = "rate1" style = "display:none">
-                        <header>
-                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
-                        </header>
                         <div class="form-control">
                             <div style='text-align: center; position: relative;'>
                                 <label for='scaleSlider'><h3>Rate this experience on a scale of strongly negative to strongly positive</h3></label>
@@ -457,7 +519,7 @@
                     </div>
 
                     <div class = "posnegexpo1" style = "display:none">
-                        <p style="padding-bottom: 20px;"></p><hr /><h3>If your memory was positive, try telling me something negative, or if your memory was negative, try recalling a positive one.</h3>
+                        <p class="posnegline" style="padding-bottom: 20px;"></p><hr /><h3>If your memory was <u>positive</u>, try telling me something <i>negative</i>. If your memory was <u>negative</u>, try recalling a <i>positive</i> one. If it is a <u>neutral</u> experience tell another <i>related story</i>.</h3>
                         <!--button for 'start recording'-->
                         <p>
                             <button type="button" name="start" id="btnStart-${value+2}" onclick="RecordingButtonStart(${value+2})">START RECORDING</button>
@@ -472,13 +534,10 @@
                             play, pause, and volume-->
 
                         <!--for play the audio-->
-                        <audio id="audioPlay-${value+2}" controls></audio>
+                        <audio id="audioPlay-${value+2}" ></audio>
                     </div>
 
                     <div class = "rate2" style = "display:none">
-                        <header>
-                            <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak as much as you can about the topic</p><hr />
-                        </header>
                         <div class="form-control">
                             <div style='text-align: center; position: relative;'>
                                 <label for='scaleSlider'><h3>Rate this experience on a scale of strongly negative to strongly positive</h3></label>
@@ -517,7 +576,7 @@
 
                         <!--for record-->
                         <audio autoplay controls muted = 'true' style="display:none;"></audio>
-                        <audio id="audioPlay-${value+3}" controls></audio>
+                        <audio id="audioPlay-${value+3}" ></audio>
                     </div>
                 </div>
             `;
@@ -674,8 +733,9 @@
                 }			
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
-                document.getElementsByClassName("introQ")[index].style.display="none";
+                document.getElementsByClassName("divider")[index].style.display="block";
                 document.getElementsByClassName("confirm1")[index].style.display="block";
+                document.getElementsByClassName("introspace")[index].style.display="none";
             }
         }
 
@@ -692,7 +752,9 @@
             if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
-                document.getElementsByClassName("posnegexpo1")[index].style.display="none";
+                document.getElementsByClassName("divider")[index].style.display="none";
+                
+                document.getElementsByClassName("posnegline")[index].style.paddingBottom="0px";
                 document.getElementsByClassName("rate1")[index].style.display="none";
                 document.getElementsByClassName("rate2")[index].style.display="block";
             }
