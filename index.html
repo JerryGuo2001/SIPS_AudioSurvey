@@ -412,7 +412,7 @@
         </div>
 		<!-- Question 1 end -->
 
-        <p id="recordingStatus" style="color: red; display: none; font-weight: bold;  font-family: 'Courier New', Courier, 'Lucida Console', monospace; font-size: 18px; letter-spacing: 1px; margin-left: 30px;">Recording...</p>
+        <p id="recordingStatus" style="color: red; display: none; font-weight: bold;  font-family: 'Courier New', Courier, 'Lucida Console', monospace; font-size: 18px; letter-spacing: 1px; margin-left: 30px;">Recording... </p>
 
 		<div class = "tab">
             <h1> Thank you for your participation!</h1>
@@ -600,15 +600,32 @@
             alert("Please ensure you accept audio permissions before continuing the survey, it might take a couple seconds to appear.");
         }
 
+        let secondsElapsed = 0; // Initialize counter
+
+        function startCounter() {
+            secondsElapsed = 0; // Reset counter
+            counterInterval = setInterval(() => {
+                secondsElapsed++; // Increment the counter
+                document.getElementById('recordingStatus').innerText = `Recording... ${secondsElapsed}s`; // Update text
+            }, 1000);
+        }
+
+        function stopCounter() {
+            clearInterval(counterInterval); // Stop the counter
+        }
+
         function RecordingButtonStartTest() {
-            document.getElementById(`btnStart-test`).style.display = 'none'
+            document.getElementById(`btnStart-test`).style.display = 'none';
+            startCounter()
             document.getElementById('recordingStatus').style.display = 'inline';
+            
         }
 
         function RecordingButtonStopTest() {
             if (document.getElementById(`btnStart-test`).style.display == 'none'){
                 document.getElementById(`btnStop-test`).style.display = 'none'
-                document.getElementById('recordingStatus').style.display = 'none';
+                stopCounter()
+                document.getElementById('recordingStatus').innerText = `${secondsElapsed} second recording`;
                 document.getElementById("checkBtn").style.display = "block";
             }
         }
@@ -624,6 +641,7 @@
                 allTabs[allTabs.length-1].style.display = "block"
                 document.getElementById("checkBtn").style.display = "none";
             }
+            document.getElementById('recordingStatus').style.display = 'none';
         }
 
         function blobToBase64(blob, callback) {
@@ -635,6 +653,7 @@
                 }
 
         function RecordingButtonStart(value) {
+            document.getElementById('recordingStatus').innerText = `Recording...`
             document.getElementById(`btnStart-${value}`).style.display = 'none'
             document.getElementById('recordingStatus').style.display = 'inline';
         }
