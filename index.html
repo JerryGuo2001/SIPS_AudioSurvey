@@ -333,7 +333,7 @@
             button.classList.add('clicked');
         }
     </script>
-	<form id="form">
+	<form id="form" style="display:none">
         <div class = "tab"><h1>SIS Audio</h1>
             <div class="form-control">
                 <label for="Prolific" id="label-Prolific" >
@@ -1034,5 +1034,47 @@
 
     </script>
 </body>
+<div id="container-consent">
+    <div id="consent">
+        <h1 style="color: white;">Please read this before proceeding.</h1>
+        <hr />
+        <div class="legal well">
+
+
+            <button type="button" class="btn btn-default btn-sm" onClick="window.print();">
+            <span class="glyphicon glyphicon-print"></span> Print a copy of this
+            </button>
+            <p> </p>
+            <iframe src="2019-5110_Study_Information_Sheet_Foraging.pdf" width="800px" height="2100px"></iframe>
+
+        </div>
+
+        <hr />
+        <h4 style="color: white;">Do you want to proceed to the experiment?</h4>
+        <br />
+
+        <center>
+            <button type="button" class="btn btn-primary btn-lg"  onclick="showHideDivs()">
+            <span class="glyphicon glyphicon-ok"></span> Yes, I want to proceed
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-danger btn-lg" onclick="endsit()">
+            <span class="glyphicon glyphicon-ban-circle"></span> No thanks, I do not want to do this HIT
+            </button>
+        </center>
+
+    </div>
+</div>
+<script>
+    function showHideDivs() {
+        document.getElementById('container-consent').style.display = 'none';
+        document.getElementById('form').style.display = 'block';
+    }
+    function endsit(){
+        document.getElementById('container-consent').style.display = 'none';
+    }
+</script>
 
 </html>
