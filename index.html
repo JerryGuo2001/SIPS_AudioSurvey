@@ -128,7 +128,7 @@
 		}
 
 		/* Styling the Form (Color, Padding, Shadow) */
-		form {
+		form, .Failed {
 			background-color: #fff;
 			max-width: 1000px;
 			margin: 50px auto;
@@ -169,7 +169,7 @@
 			width: auto;
 		}
 
-        .tab{
+        .tab,.Failed{
             display:none
         }
 
@@ -240,8 +240,12 @@
         .Stop {
             display: block;
         }
+
+        #HITaccept, #HITdecline {
+            margin-bottom: 50px;
+        }
         
-        [id^="btnStart-"], [id^="btnStop-"] {
+        [id^="btnStart-"], [id^="btnStop-"], #HITaccept, #HITdecline {
             padding: 10px 20px; 
             border: none;
             border-radius: 5px;
@@ -251,23 +255,23 @@
             transition: background-color 0.3s, transform 0.2s;
         }
 
-        [id^="btnStart-"] {
+        [id^="btnStart-"], #HITaccept {
             background-color: #06b563;
             color: black;
         }
 
-        [id^="btnStop-"] {
+        [id^="btnStop-"], #HITdecline {
             background-color: rgb(247, 76, 76);
             color: black;
         }
 
         /* Hover effect for buttons */
-        [id^="btnStart-"]:hover, [id^="btnStop-"]:hover {
+        [id^="btnStart-"]:hover, [id^="btnStop-"]:hover, #HITaccept:hover, #HITdecline:hover  {
             transform: scale(1.05);
         }
 
         /* Active/Pressed effect for buttons */
-        [id^="btnStart-"]:active, [id^="btnStop-"]:active {
+        [id^="btnStart-"]:active, [id^="btnStop-"]:active, #HITaccept:active, #HITdecline:active  {
             transform: scale(0.95);
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
         }
@@ -432,10 +436,15 @@
         </div>
 		<!-- This is the HTML for the button ; the nextPrev() is the function called in the script -->
         
-        
 
     </div>
+    
 	</form>
+
+    <div class = "Failed" id = "Failed" style = "display: none;">
+        <h1>Thank you for your participation, unfortunately you do not qualify for this experiment.</h1>
+        <h3>Feel free to exit and close this tab.</h3>
+    </div>
 
     <script>
         const SurveyQuestions = [
@@ -1054,13 +1063,13 @@
         <br />
 
         <center>
-            <button type="button" class="btn btn-primary btn-lg"  onclick="showHideDivs()">
+            <button type="button" id="HITaccept" class="btn btn-primary btn-lg"  onclick="showHideDivs()">
             <span class="glyphicon glyphicon-ok"></span> Yes, I want to proceed
             </button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button type="button" class="btn btn-danger btn-lg" onclick="endsit()">
+            <button type="button" id="HITdecline" class="btn btn-danger btn-lg" onclick="endsit()">
             <span class="glyphicon glyphicon-ban-circle"></span> No thanks, I do not want to do this HIT
             </button>
         </center>
@@ -1074,6 +1083,7 @@
     }
     function endsit(){
         document.getElementById('container-consent').style.display = 'none';
+        document.getElementById('Failed').style.display = "block";
     }
 </script>
 
