@@ -1,6 +1,6 @@
 let aList = [];
 let blobs = []; // Array to hold the Blob objects
-var blobUrl = []
+var blobUrl = [];
 
 function base64ToBlob(base64, contentType) {
     const byteCharacters = atob(base64.split(",")[1]);

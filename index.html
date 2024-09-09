@@ -462,14 +462,14 @@
             var value = 4*index
             var questionHTML = 
                 `<div class = "tab">
-                    <div class = "introQ">
+                    <div class = "intro">
                         <header>
                             <h1>SIS Audio Questions</h1><p>You will have as much time as you require to say as much as you can about the questions. Please make sure to speak in as much detail as you can about the topic.</p><hr />
                         </header>
 
                         
                         
-                        <h3>${question}</h3>
+                        <h3 class ="introQ" style="display:block">${question}</h3>
                         <div class = "divider" style = "display:none">
                             <hr />
                         </div>
@@ -772,7 +772,7 @@
                 }			
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
-                document.getElementsByClassName("divider")[index].style.display="block";
+                // document.getElementsByClassName("divider")[index].style.display="block";
                 if(index != 4 && index != 5){
                     document.getElementsByClassName("confirm1")[index].style.display="block";
                 }else if (index == 4){
@@ -786,6 +786,7 @@
                 }
                 
                 document.getElementsByClassName("introspace")[index].style.display="none";
+                document.getElementsByClassName("introQ")[index].style.display="none";
             }
         }
 
@@ -803,6 +804,7 @@
             if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
+                document.getElementsByClassName('posnegexpo1')[index].style.display = 'none';
 
                 if(index != 4){
                     document.getElementsByClassName("divider")[index].style.display="none";
@@ -820,6 +822,8 @@
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
                 document.getElementById("nextBtn").style.display="block" 
+                document.getElementsByClassName("rate2")[index].style.display="none";
+                document.getElementsByClassName("confirm2")[index].style.display="none";
             }
         }
 
