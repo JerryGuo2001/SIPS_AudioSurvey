@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV File Reader</title>
+    <style>
+        body {
+            background-color: #002244;
+            font-family: Verdana;
+            text-align: center;
+        }
+
+        /* Styling the Form (Color, Padding, Shadow) */
+        form, .Failed {
+            background-color: #fff;
+            max-width: 1000px;
+            height: 300px;
+            margin: 50px auto;
+            padding: 30px 20px;
+            box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Styling form-control Class */
+        .form-control {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        /* Styling form-control Label */
+        .form-control label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Styling form-control input, 
+        select, textarea */
+        .form-control input,
+        .form-control select,
+        .form-control textarea {
+            border: 1px solid #777;
+            border-radius: 2px;
+            font-family: inherit;
+            padding: 10px;
+            display: block;
+            width: 95%;
+        }
+
+        /* Styling form-control Radio 
+        button and Checkbox */
+        .form-control input[type="radio"],
+        .form-control input[type="checkbox"] {
+            display: inline-block;
+            width: auto;
+        }
+        #download {
+			background-color: #d3d3d3;
+			border: none;
+			border-radius: 5px;
+			font-family: inherit;
+			font-size: 21px;
+			display: block;
+			width: 30%;
+			margin-top: 50px;
+			margin-bottom: 20px;
+            margin-right: 30px;
+            float: right;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+		}
+        #download:hover {
+            background-color: #86eebd;
+            transform: scale(1.05);
+        }
+
+        /* Active/Pressed effect for buttons */
+        #download:active {
+            background-color: #05c46b;
+            transform: scale(0.95);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #download.clicked {
+            background-color: #05c46b;
+        }
+    </style>
+</head>
+<body>
+    <form id="form" style="display:block">
+        <div class = "tab"><h1>SIPS Audio Survey MP3 Download</h1>
+            <div class="form-control">
+                <label for="Prolific" id="label-Prolific" >
+                    Prolific ID
+                </label>
+                <input type="text" id="ProlificIDvalue"
+                    placeholder="Experimenter: enter the exact Prolific ID of the data you wish to download" />
+                </input>
+            </div>
+            <div class="form-control">
+                <button type="button" id="download" value="download" onclick="fetchData()">
+                    Download
+                </button>
+            </div>
+        </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.1.0/dist/umd/supabase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+    <script>
+    let aList = [];
+    let blobs = []; // Array to hold the Blob objects
+    var blobUrl = [];
+
+    const supabaseUrl = 'https://pxjzoermcszmmxyuuqbp.supabase.co'; // Replace with your Supabase URL
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4anpvZXJtY3N6bW14eXV1cWJwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcyNDEzMTAzNiwiZXhwIjoyMDM5NzA3MDM2fQ.C7lKr43mhydm0gEX1X6v7RI-wn2-D7k_Vh98Q89-hSA'; // Replace with your Supabase anon/public key
+    const supabase1 = supabase.createClient(supabaseUrl, supabaseKey); 
+
+    async function fetchData() {
+        const { data, error } = await supabase1
+            .from('data_store') // Replace with your actual table name
+            .select('*') // Select all columns, or specify columns like .select('column1, column2')
+            .eq('id',document.getElementById('ProlificIDvalue').value)
+
+        if (error) {
+            console.error('Error fetching data:', error);
+        } else {
+            console.log('Data retrieved:', data);
+            AudioData = data
+            AudioParse = AudioData[0]
+            delete AudioParse.id
+            delete AudioParse.created_at
+            delete AudioParse.slider_values
+            delete AudioParse.demographics
+            AudioParse = Object.values(AudioParse)
+
+        }
+        for (let i = 0;i<AudioParse.length;i++) {
+            // Convert the Base64 string back to a Blob
+            var contentType = AudioParse[i].split(",")[0].split(":")[1].split(";")[0];
+            var myBlob = base64ToBlob(AudioParse[i], contentType);
+
+            // Create a Blob URL and use it
+            blobUrl[i] = URL.createObjectURL(myBlob);
+            console.log(blobUrl[i]);
+        }
+
+        for (let i = 0; i < blobUrl.length; i++) {
+            fetch(blobUrl[i])
+                .then(response => response.blob())
+                .then(blob => {
+                    blobs[i] = blob; // Store the Blob in the array
+                    // Check if all Blobs have been fetched
+                    if (blobs.length === blobUrl.length && blobs.every(b => b !== undefined)) {
+                        createZip(blobs);
+                    }
+                });
+        }
+    }
+
+    function createZip(blobs) {
+        var zip = new JSZip();
+        for(let i = 0; i < blobs.length; i++){
+            zip.file(`recording-${i}.mp3`, blobs[i]); // Add each Blob to the ZIP file
+        }
+        
+        // Generate the ZIP file and trigger the download
+        zip.generateAsync({ type: 'blob' }).then((zipBlob) => {
+            const zipUrl = URL.createObjectURL(zipBlob);
+            let a = document.createElement('a');
+            a.href = zipUrl;
+            a.download = `recordings-${document.getElementById('ProlificIDvalue').value}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(zipUrl); // Clean up the Blob URL
+        });
+    }
+
+    function base64ToBlob(base64, contentType) {
+        const byteCharacters = atob(base64.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: contentType });
+    }
+
+    document.getElementById('download').addEventListener('click', function() {
+        if (document.getElementById('ProlificIDvalue').value!=''){
+            document.getElementById('download').textContent = 'Downloaded!';
+            this.classList.add('clicked');
+        }else{document.getElementById('download').textContent = 'Try again';}
+    });
+
+    </script>
+</body>

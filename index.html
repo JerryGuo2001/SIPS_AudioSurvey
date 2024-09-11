@@ -17,40 +17,27 @@
         localStorage.clear()
         testAudio = []
 		audioList = []
-        SubID = []
         demographics = []
-        // audio is true, for recording
+        // Preset the first test audio
         const audioIN = { audio: true}
         // Access the permission for use
         // the microphone
         navigator.mediaDevices.getUserMedia(audioIN)
 
-        // 'then()' method returns a Promise
         .then(function (mediaStreamObj) {
-
             // Connect the media stream to the
             // first audio element
             let audio = document.querySelector('audio');
             //returns the recorded audio via 'audio' tag
 
-            // 'srcObject' is a property which 
-            // takes the media object
-            // This is supported in the newer browsers
+            // 'srcObject' is a property which akes the media object
             if ("srcObject" in audio) {
             audio.srcObject = mediaStreamObj;
             }
-            else { // Old version
+            else {
             audio.src = window.URL
                 .createObjectURL(mediaStreamObj);
             }
-
-            // It will play the audio
-            // audio.onloadedmetadata = function (ev) {
-
-            // // Play the audio in the 2nd audio
-            // // element what is being recorded
-            // audio.play();
-            // };
 
             // Start record
             let start = document.getElementById(`btnStart-test`);
@@ -58,33 +45,28 @@
             // Stop record
             let stop = document.getElementById(`btnStop-test`);
 
-            // 2nd audio tag for play the audio
+            // For audio playback
             let playAudio = document.getElementById(`audioPlay-test`);
 
-            // This is the main thing to recorded 
-            // the audio 'MediaRecorder' API
+            // This is the main thing to be recorded 
             let mediaRecorder = new MediaRecorder(mediaStreamObj);
             // Pass the audio stream 
 
-            // Start event
+            // Start recording when button is clicked
             start.addEventListener('click', function (ev) {
             mediaRecorder.start();
-            // console.log(mediaRecorder.state);
             })
 
-            // Stop event
+            // Stop event when button is clicked
             stop.addEventListener('click', function (ev) {
             mediaRecorder.stop();
-            // console.log(mediaRecorder.state);
             });
 
-            // If audio data available then push 
-            // it to the chunk array
             mediaRecorder.ondataavailable = function (ev) {
             dataArray.push(ev.data);
             }
 
-            // Chunk array to store the audio data 
+            // Where raw audio data is stored
             let dataArray = [];
 
             // Convert the audio data in to blob 
@@ -96,7 +78,7 @@
                             { 'type': 'audio/mp3;' });
                 
                 // After fill up the chunk 
-                // array make it empty
+                // Array to hold data
                 dataArray = [];
 
                 // Creating audio url with reference 
@@ -127,7 +109,7 @@
 			text-align: center;
 		}
 
-		/* Styling the Form (Color, Padding, Shadow) */
+		/* Styling the Form and Failed tab (Color, Padding, Shadow) */
 		form, .Failed {
 			background-color: #fff;
 			max-width: 1000px;
@@ -136,20 +118,19 @@
 			box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
 		}
 
-		/* Styling form-control Class */
+        /* Styling certain elements in the form */
 		.form-control {
 			text-align: left;
 			margin-bottom: 25px;
 		}
 
-		/* Styling form-control Label */
+		/* Styling any labels */
 		.form-control label {
 			display: block;
 			margin-bottom: 10px;
 		}
 
-		/* Styling form-control input, 
-		select, textarea */
+		/* Styling where people type and click inputs */
 		.form-control input,
 		.form-control select,
 		.form-control textarea {
@@ -161,8 +142,7 @@
 			width: 95%;
 		}
 
-		/* Styling form-control Radio 
-		button and Checkbox */
+		/* Radio are select one, checkbox is select multiple */
 		.form-control input[type="radio"],
 		.form-control input[type="checkbox"] {
 			display: inline-block;
@@ -173,7 +153,7 @@
             display:none
         }
 
-		/* Styling Button */
+		/* Styling the buttons, including when hovering and active */
 		#nextBtn {
 			background-color: #05c46b;
 			border: none;
@@ -217,6 +197,7 @@
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
+        /* Presetting the displays of some elements */
        .Next {
             display: block
         }
@@ -245,6 +226,7 @@
             margin-bottom: 50px;
         }
         
+        /* Styling more buttons, including when some are clicked */
         [id^="btnStart-"], [id^="btnStop-"], #HITaccept, #HITdecline {
             padding: 10px 20px; 
             border: none;
@@ -276,14 +258,14 @@
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
         }
         #loadData {
-            background-color: #d3d3d3; /* Muted color */
-            color: #333; /* Dark text color */
-            border: none; /* Remove default border */
-            padding: 10px 20px; /* Add padding */
-            border-radius: 5px; /* Rounded corners */
-            font-size: 16px; /* Font size */
-            cursor: pointer; /* Pointer cursor on hover */
-            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+            background-color: #d3d3d3;
+            color: #333;
+            border: none;
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         #loadData:hover {
@@ -291,9 +273,10 @@
             background-color: rgb(136, 234, 136);
         }
         
+        /* For changing style when clicked need event listener that adds it as a class*/
         #loadData.clicked {
-            background-color: #4CAF50; /* Green color when clicked */
-            color: white; /* White text color when clicked */
+            background-color: #4CAF50;
+            color: white;
         }
 	</style>
 </head>
@@ -301,19 +284,20 @@
 <body>
     <script>
         
-        const supabaseUrl = 'https://pxjzoermcszmmxyuuqbp.supabase.co'; // Replace with your Supabase URL
+        // Initializing the databse Supabase
+        const supabaseUrl = 'https://pxjzoermcszmmxyuuqbp.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4anpvZXJtY3N6bW14eXV1cWJwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcyNDEzMTAzNiwiZXhwIjoyMDM5NzA3MDM2fQ.C7lKr43mhydm0gEX1X6v7RI-wn2-D7k_Vh98Q89-hSA'; // Replace with your Supabase anon/public key
         const supabase1 = supabase.createClient(supabaseUrl, supabaseKey); 
 
-             // Example: Save data to Supabase
-             async function saveData(id, dem, slider, audio) {
+        // Needed to change supabase to supabase1 to prevent recursion
+        async function saveData(id, dem, slider, audio) {
             const { data, error } = await supabase1
-                .from('data_store')
-                .insert([{ id: id, demographics: dem, slider_values: slider, audio_data_1: audio[0], audio_data_2: audio[1], audio_data_3: audio[2], audio_data_4: audio[3]
-                    , audio_data_5: audio[4], audio_data_6: audio[5], audio_data_7: audio[6], audio_data_8: audio[7], audio_data_9: audio[8], audio_data_10: audio[9], audio_data_11: audio[10]
-                    , audio_data_12: audio[11], audio_data_13: audio[12], audio_data_14: audio[13], audio_data_15: audio[14], audio_data_16: audio[15], audio_data_17: audio[16], audio_data_18: audio[17],
-                    audio_data_19: audio[18], audio_data_20: audio[19]
-                 }]);
+            .from('data_store')
+            .insert([{ id: id, demographics: dem, slider_values: slider, audio_data_1: audio[0], audio_data_2: audio[1], audio_data_3: audio[2], audio_data_4: audio[3]
+                , audio_data_5: audio[4], audio_data_6: audio[5], audio_data_7: audio[6], audio_data_8: audio[7], audio_data_9: audio[8], audio_data_10: audio[9], audio_data_11: audio[10]
+                , audio_data_12: audio[11], audio_data_13: audio[12], audio_data_14: audio[13], audio_data_15: audio[14], audio_data_16: audio[15], audio_data_17: audio[16], audio_data_18: audio[17],
+                audio_data_19: audio[18], audio_data_20: audio[19]
+                }]);
 
             if (error) {
                 console.error('Error saving data:', error);
@@ -323,10 +307,8 @@
         }
 
         function dataLoader() {
+            // Loads data from local storage to the database using the saveData() function
             var AudioString = JSON.stringify(base64Audio);
-            // localStorage.setItem("AudioFiles", AudioString)
-            // localStorage.setItem("CombinedResponses", JSON.stringify(JSON.parse(localStorage.Demographics).concat(JSON.parse(localStorage.SliderValues),JSON.parse(localStorage.AudioFiles))))
-            // Example code to send data to Vercel API
             let id = demographics[0]
             let dem = [demographics[1],demographics[2],demographics[3]]
             let slider = JSON.parse(localStorage.SliderValues)
@@ -337,6 +319,7 @@
             button.classList.add('clicked');
         }
     </script>
+    <!-- Main survey html info -->
 	<form id="form" style="display:none">
         <div class = "tab"><h1>SIPS Audio Survey</h1>
             <div class="form-control">
@@ -359,7 +342,6 @@
                 <label for="gender" id="label-gender">
                     Gender <sup>*</sup>
                 </label>
-                <!-- Dropdown options -->
                 <select name="gender" id="gender">
                     <option value="Gender" disabled selected>Enter your gender</option>
                     <option value="Male">Male</option>
@@ -373,7 +355,6 @@
                 <label for="role" id="label-role">
                     Education Level? <sup>*</sup>
                 </label>
-                <!-- Dropdown options -->
                 <select name="role" id="role">
                     <option value="Role" disabled selected>Enter your highest completed education</option>
                     <option value="No Highschool Degree">No Highschool Degree</option>
@@ -393,28 +374,20 @@
                 </header>
                 
                 <h3>What did you eat for breakfast this morning?</h3>
-                <!--button for 'start recording'-->
                 <p>
                     <button type="button" name="startTest" id="btnStart-test" onclick="RecordingButtonStartTest()">START RECORDING</button>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                     <button type="button" name="stopTest" id="btnStop-test" onclick="RecordingButtonStopTest()">STOP RECORDING</button>
-                    <!--button for 'stop recording'-->
                 </p>
 
-                <!--for record (Can change but this one has no play button so it just auto records)-->
                 <audio autoplay controls muted = 'true' style="display:none;"></audio>
-                <!--'controls' use for add 
-                    play, pause, and volume-->
 
-                <!--for play the audio-->
                 <audio id="audioPlay-test" controls></audio>
             </div>
         </div>
 
-		<!-- Question 1 start -->
         <div class = "Questions" id="AQ">
         </div>
-		<!-- Question 1 end -->
 
         <p id="recordingStatus" style="color: red; display: none; font-weight: bold;  font-family: 'Courier New', Courier, 'Lucida Console', monospace; font-size: 18px; letter-spacing: 1px; margin-left: 30px;">Recording... </p>
 
@@ -447,6 +420,7 @@
     </div>
 
     <script>
+        // Dynamically adding questions here
         const SurveyQuestions = [
             //Non-Alcohol Questions
             "What is a significant memory from your childhood that you still vividly remember?",
@@ -600,7 +574,6 @@
 	<script>
 		// Set current tab to keep track of where the user is
 		var currentTab = 0
-
         
 		// Function that is identified below ; called to show present tab
 		showTab(currentTab);
@@ -609,20 +582,22 @@
             alert("Please ensure you accept audio permissions before continuing the survey, it might take a couple seconds to appear.");
         }
 
-        let secondsElapsed = 0; // Initialize counter
+        // For the recording timer
+        let secondsElapsed = 0;
 
         function startCounter() {
-            secondsElapsed = 0; // Reset counter
+            secondsElapsed = 0;
             counterInterval = setInterval(() => {
-                secondsElapsed++; // Increment the counter
-                document.getElementById('recordingStatus').innerText = `Recording... ${secondsElapsed}s`; // Update text
+                secondsElapsed++; 
+                document.getElementById('recordingStatus').innerText = `Recording... ${secondsElapsed}s`; 
             }, 1000);
         }
 
         function stopCounter() {
-            clearInterval(counterInterval); // Stop the counter
+            clearInterval(counterInterval);
         }
 
+        // These are the functions for all the start and stop buttons
         function RecordingButtonStartTest() {
             document.getElementById(`btnStart-test`).style.display = 'none';
             startCounter()
@@ -653,6 +628,7 @@
             document.getElementById('recordingStatus').style.display = 'none';
         }
 
+        // function to change blobs into base64 for database
         function blobToBase64(blob, callback) {
                     const reader = new FileReader();
                     reader.onloadend = function() {
@@ -670,23 +646,12 @@
         function RecordingButtonStop1(value, index) {
             if (document.getElementById(`btnStart-${value}`).style.display == 'none'){
                 for(let i = 0;i<(4*SurveyQuestions.length);i++){
-                    // // audio is true, for recording
-
-                    // // Access the permission for use
-                    // // the microphone
                     navigator.mediaDevices.getUserMedia({audio:true})
 
-                    // 'then()' method returns a Promise
                     .then(function (mediaStreamObj) {
 
-                        // Connect the media stream to the
-                        // first audio element
                         let audio = document.querySelector('audio');
-                        //returns the recorded audio via 'audio' tag
 
-                        // 'srcObject' is a property which 
-                        // takes the media object
-                        // This is supported in the newer browsers
                         if ("srcObject" in audio) {
                         audio.srcObject = mediaStreamObj;
                         }
@@ -695,67 +660,39 @@
                             .createObjectURL(mediaStreamObj);
                         }
 
-                        // It will play the audio
-                        // audio.onloadedmetadata = function (ev) {
-
-                        // // Play the audio in the 2nd audio
-                        // // element what is being recorded
-                        // audio.play();
-                        // };
-
-                        // Start record
                         let start = document.getElementById(`btnStart-${i}`);
 
-                        // Stop record
                         let stop = document.getElementById(`btnStop-${i}`);
 
-                        // 2nd audio tag for play the audio
                         let playAudio = document.getElementById(`audioPlay-${i}`);
 
-                        // This is the main thing to recorded 
-                        // the audio 'MediaRecorder' API
                         let mediaRecorder = new MediaRecorder(mediaStreamObj);
-                        // Pass the audio stream 
 
-                        // Start event
                         start.addEventListener('click', function (ev) {
                         mediaRecorder.start();
-                        // console.log(mediaRecorder.state);
                         })
 
-                        // Stop event
                         stop.addEventListener('click', function (ev) {
                         mediaRecorder.stop();
-                        // console.log(mediaRecorder.state);
+
                         });
 
-                        // If audio data available then push 
-                        // it to the chunk array
                         mediaRecorder.ondataavailable = function (ev) {
                         dataArray.push(ev.data);
                         }
 
-                        // Chunk array to store the audio data 
                         let dataArray = [];
 
-                        // Convert the audio data in to blob 
-                        // after stopping the recording
                         mediaRecorder.onstop = function (ev) {
 
-                            // blob of type mp3
                             let audioData = new Blob(dataArray, 
-                                        { 'type': 'audio/mp3;' });
+                                { 'type': 'audio/mp3;' });
                             
-                            // After fill up the chunk 
-                            // array make it empty
                             dataArray = [];
 
-                            // Creating audio url with reference 
-                            // of created blob named 'audioData'
                             let audioSrc = window.URL
                                 .createObjectURL(audioData);
 
-                            // Pushing the audio file to an array outside function
                             if(i != 1){
                                 if(audioList[i]){
                                 }else{audioList.push(audioData)}
@@ -763,16 +700,15 @@
                                 audioList.push(audioData)
                                 audioList.splice(1,1)
                             }
-                            
 
-                            // Pass the audio url to the 2nd video tag
                             playAudio.src = audioSrc;
                         }
                     })
                 }			
                 document.getElementById(`btnStop-${value}`).style.display = 'none'
                 document.getElementById('recordingStatus').style.display = 'none';
-                // document.getElementsByClassName("divider")[index].style.display="block";
+
+                // This is for certain questions we do not want certain parts asked
                 if(index != 4 && index != 5){
                     document.getElementsByClassName("confirm1")[index].style.display="block";
                 }else if (index == 4){
@@ -797,7 +733,6 @@
                 document.getElementsByClassName("confirm1")[index].style.display="none";
                 document.getElementsByClassName("rate1")[index].style.display="block";
             }
-            
         }
 
         function RecordingButtonStop3(value, index) {
@@ -827,6 +762,7 @@
             }
         }
 
+        // Shows the first tab
 		function showTab(n) {
 			var x = document.getElementsByClassName("tab")
 			x[0].style.display = "block"
@@ -836,116 +772,83 @@
 
 		function nextPrev() {
             document.getElementById("checkBtn").style.display = "none";
-            // audio is true, for recording
 
-            // Access the permission for use
-            // the microphone
             navigator.mediaDevices.getUserMedia(audioIN)
 
-            // 'then()' method returns a Promise
             .then(function (mediaStreamObj) {
 
-                // Connect the media stream to the
-                // first audio element
                 let audio = document.querySelector('audio');
-                //returns the recorded audio via 'audio' tag
 
-                // 'srcObject' is a property which 
-                // takes the media object
-                // This is supported in the newer browsers
                 if ("srcObject" in audio) {
                 audio.srcObject = mediaStreamObj;
                 }
-                else { // Old version
+                else {
                 audio.src = window.URL
                     .createObjectURL(mediaStreamObj);
                 }
 
-                // It will play the audio
-                // audio.onloadedmetadata = function (ev) {
-
-                // // Play the audio in the 2nd audio
-                // // element what is being recorded
-                // audio.play();
-                // };
-
-                // Start record
                 let start = document.getElementById(`btnStart-0`);
 
-                // Stop record
                 let stop = document.getElementById(`btnStop-0`);
 
-                // 2nd audio tag for play the audio
                 let playAudio = document.getElementById(`audioPlay-0`);
 
-                // This is the main thing to recorded 
-                // the audio 'MediaRecorder' API
                 let mediaRecorder = new MediaRecorder(mediaStreamObj);
-                // Pass the audio stream 
 
-                // Start event
                 start.addEventListener('click', function (ev) {
                 mediaRecorder.start();
-                // console.log(mediaRecorder.state);
                 })
 
-                // Stop event
                 stop.addEventListener('click', function (ev) {
                 mediaRecorder.stop();
-                // console.log(mediaRecorder.state);
                 });
 
-                // If audio data available then push 
-                // it to the chunk array
                 mediaRecorder.ondataavailable = function (ev) {
                 dataArray.push(ev.data);
                 }
 
-                // Chunk array to store the audio data 
                 let dataArray = [];
 
-                // Convert the audio data in to blob 
-                // after stopping the recording
                 mediaRecorder.onstop = function (ev) {
 
-                    // blob of type mp3
                     let audioData = new Blob(dataArray, 
                                 { 'type': 'audio/mp3;' });
                     
-                    // After fill up the chunk 
-                    // array make it empty
                     dataArray = [];
 
-                    // Creating audio url with reference 
-                    // of created blob named 'audioData'
                     let audioSrc = window.URL
                         .createObjectURL(audioData);
 
-                    // Pushing the audio file to an array outside function
                     audioList.push(audioData)
                     
 
-                    // Pass the audio url to the 2nd video tag
                     playAudio.src = audioSrc;
                 }
             })
-            // If any error occurs then handles the error 
             .catch(function (err) {
                 console.log(err.name, err.message);
             });
 
             var x = document.getElementsByClassName("tab");
+
 			// Remove current tab when calling next
 			x[currentTab].style.display = "none";
 			currentTab += 1
 			x[currentTab].style.display = "block"
 			window.scrollTo(0,0)
+
+            // Last tab there should be no next button
 			if (currentTab == x.length - 1){
 				document.getElementById("nextBtn").style.display="none"
+
+                // Saving all the data
                 demographics = [document.getElementById("ProlificIDvalue").value, document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
 
+                // There was a bug when removing questions that duplicated some responses ; should clean this but for now temporary fix
                 audioList.splice(18,1)
                 audioList.splice(19,1)
+
+                // Convert all of the blobs into base64 (the -4 is because of the empty questions for the ones we skipped)
                 for (let i=0;i<(4*SurveyQuestions.length-4);i++){
                     blobToBase64(audioList[i], function(base64) {
                         base64Audio[i] = base64
@@ -955,36 +858,19 @@
                 for (let i = 0;i<document.getElementsByName('scaleSlider').length;i++) {
                     sliderValue[i] = document.getElementsByName('scaleSlider')[i].value
                 }
-
                 var DemographicsString = JSON.stringify(demographics)
                 var sliderValueString = JSON.stringify(sliderValue)
-
-
                 localStorage.setItem("Demographics", DemographicsString)
                 localStorage.setItem("SliderValues",sliderValueString)
             }
             document.getElementById("nextBtn").style.display="none" 
         }
 
-        // const button = document.getElementById('myButton');
-
-        // function handleClick(event) {
-        //     event.stopPropagation();
-        //     event.preventDefault();
-
-        //     console.log('Button clicked');
-        //     // Your code here
-        // }
-
-        // button.addEventListener('click', handleClick);
-
-
-    
-
         function showNextButton() {
             document.getElementsByClassName('Next')[0].style.display = 'block';
         }
 
+        // Code to update the slider questions
         let sliderValueVariable = 0;
         function updateValue(value,scaledIndex) {
             sliderValueVariable = value;
@@ -999,13 +885,13 @@
                 
             }else {
                 var index = (scaledIndex - 1)/2
-                document.getElementsByClassName('confirm2')[index].style.display = 'block';
-                
+                document.getElementsByClassName('confirm2')[index].style.display = 'block';   
             }
         }
 
 	</script>
     <script>
+        // Ensuring that all the questions on the first page are filled out before the next button appears
         document.getElementById('gender').addEventListener('change', function() {
             Gendervalue = this.value;
             if (document.getElementById("ProlificIDvalue").value != "" && document.getElementById("Agevalue").value != "" &&  document.getElementById('gender').value != 'Gender' && document.getElementById('role').value != 'Role'){
@@ -1031,14 +917,9 @@
             }
         });
 
-        function data(){
-            demographics = [document.getElementById('ProlificIDvalue'), document.getElementById("Agevalue").value, Gendervalue, Rolevalue]
-        }
         if (currentTab ==0){
             document.getElementById("nextBtn").style.display = "none"
         }
-        
-
 
     </script>
 
@@ -1048,12 +929,12 @@
     </script>
 </body>
 <div id="container-consent">
+    <!-- html for the consent form -->
     <div id="consent">
         <h1 style="color: white;">Please read this before proceeding.</h1>
         <hr />
         <div class="legal well">
-
-
+            
             <button type="button" class="btn btn-default btn-sm" onClick="window.print();">
             <span class="glyphicon glyphicon-print"></span> Print a copy of this
             </button>
@@ -1081,6 +962,7 @@
     </div>
 </div>
 <script>
+    // Functions for accepting and rejecting the HIT
     function showHideDivs() {
         document.getElementById('container-consent').style.display = 'none';
         document.getElementById('form').style.display = 'block';
