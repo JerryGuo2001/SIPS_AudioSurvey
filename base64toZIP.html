@@ -83,6 +83,37 @@
         #download.clicked {
             background-color: #05c46b;
         }
+
+        #delete {
+			background-color: #ff7b7b;
+			border: none;
+			border-radius: 5px;
+			font-family: inherit;
+			font-size: 21px;
+			display: block;
+			width: 30%;
+			margin-top: 50px;
+			margin-bottom: 20px;
+            margin-right: 30px;
+            float: right;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+		}
+        #delete:hover {
+            background-color: #ec3c3c;
+            transform: scale(1.05);
+        }
+
+        /* Active/Pressed effect for buttons */
+        #delete:active {
+            background-color: #e90000;
+            transform: scale(0.95);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #delete.clicked {
+            background-color: #f00101;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +130,11 @@
             <div class="form-control">
                 <button type="button" id="download" value="download" onclick="fetchData()">
                     Download
+                </button>
+            </div>
+            <div class="form-control">
+                <button type="button" id="delete" value="delete">
+                    Delete
                 </button>
             </div>
         </div>
@@ -123,16 +159,24 @@
 
         if (error) {
             console.error('Error fetching data:', error);
+            alert('Make sure the Prolific ID is correct')
         } else {
-            console.log('Data retrieved:', data);
             AudioData = data
+            if(AudioData.length == 0){
+                alert('Make sure the Prolific ID is correct')
+                document.getElementById('download').textContent = 'Try again';
+                return;
+            }else{
+            console.log('Data retrieved:', data);
+            document.getElementById('download').textContent = 'Downloaded!';
+            document.getElementById('download').classList.add('clicked');
             AudioParse = AudioData[0]
             delete AudioParse.id
             delete AudioParse.created_at
             delete AudioParse.slider_values
             delete AudioParse.demographics
             AudioParse = Object.values(AudioParse)
-
+            }
         }
         for (let i = 0;i<AudioParse.length;i++) {
             // Convert the Base64 string back to a Blob
@@ -154,6 +198,22 @@
                         createZip(blobs);
                     }
                 });
+        }
+    }
+
+    async function deleteRow() {
+        const { data, error } = await supabase1
+            .from('data_store')  // Replace with your table name
+            .delete()
+            .eq('id', document.getElementById('ProlificIDvalue').value);
+        if (error) {
+            console.error('Error deleting row:', error);
+            alert('Make sure the Prolific ID is correct')
+        } else {
+            if (document.getElementById('ProlificIDvalue').value!=''){
+                console.log('Row deleted successfully:', data);
+            }
+            
         }
     }
 
@@ -186,11 +246,30 @@
         return new Blob([byteArray], { type: contentType });
     }
 
-    document.getElementById('download').addEventListener('click', function() {
+    // document.getElementById('download').addEventListener('click', function() {
+    //     if (document.getElementById('ProlificIDvalue').value!=''){
+    //         document.getElementById('download').textContent = 'Downloaded!';
+    //         this.classList.add('clicked');
+    //     }else{document.getElementById('download').textContent = 'Try again';alert('Make sure the Prolific ID is correct')}
+    // });
+
+    document.getElementById("delete").addEventListener("click", function(event) {
+    const userConfirmed = confirm("Are you sure you want to delete the files? A reminder to confirm the mp3 data has been downloaded properly before deleting");
+
+    if (userConfirmed) {
         if (document.getElementById('ProlificIDvalue').value!=''){
-            document.getElementById('download').textContent = 'Downloaded!';
+            document.getElementById('delete').textContent = 'Deleted!';
+            console.log("Files deleted");
             this.classList.add('clicked');
-        }else{document.getElementById('download').textContent = 'Try again';}
+        }else{document.getElementById('delete').textContent = 'Try again';alert('Make sure the Prolific ID is correct');console.log('Try again')}
+        
+        deleteRow()
+    } else {
+        console.log("File deletion canceled");
+    }
+    });
+    document.getElementById('delete').addEventListener('click', function() {
+        
     });
 
     </script>
